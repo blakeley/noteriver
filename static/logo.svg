@@ -2,7 +2,6 @@
   <defs>
     <style type="text/css">
       .note {fill:#303030;}
-      .river {fill:#386CA4;}
       .river {fill:#009EE2;}
     </style>
     <mask id="river-clip">
@@ -12,7 +11,7 @@
     </mask>
   </defs>
 
-  <g class="river" fill="#386CA4">
+  <g class="river">
     <path d="M0,13 c8,0,8,-14,16,-10 -8,0,-8,14,-16,10" />
   </g>
 

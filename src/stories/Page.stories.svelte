@@ -2,6 +2,7 @@
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import { expect, userEvent, waitFor, within } from 'storybook/test';
   import Page from './Page.svelte';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import { fn } from 'storybook/test';
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
