@@ -24,3 +24,7 @@ vite.config.ts.timestamp-*
 
 *storybook.log
 storybook-static
+
+# Migration - Old NextJS app
+/noteriver-old2
+
