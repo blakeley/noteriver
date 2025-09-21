@@ -84,3 +84,45 @@ export async function getMidiList(
 		throw new Error('Failed to fetch MIDI files');
 	}
 }
+
+export async function getMidiById(id: number): Promise<MidiWithRelations | null> {
+	try {
+		const result = await db
+			.select({
+				midi: midis,
+				createdBy: users
+			})
+			.from(midis)
+			.leftJoin(users, eq(midis.createdById, users.id))
+			.where(eq(midis.id, id))
+			.limit(1);
+
+		if (result.length === 0) {
+			return null;
+		}
+
+		const row = result[0]!;
+
+		// Get comments count
+		const [commentsResult] = await db
+			.select({ count: count() })
+			.from(comments)
+			.where(eq(comments.midiId, row.midi.id));
+
+		// Get favorites count
+		const [favoritesResult] = await db
+			.select({ count: count() })
+			.from(favorites)
+			.where(eq(favorites.midiId, row.midi.id));
+
+		return {
+			...row.midi,
+			createdBy: row.createdBy || undefined,
+			commentsCount: commentsResult?.count || 0,
+			favoritesCount: favoritesResult?.count || 0
+		};
+	} catch (error) {
+		console.error('Error fetching MIDI by ID:', error);
+		throw new Error('Failed to fetch MIDI file');
+	}
+}

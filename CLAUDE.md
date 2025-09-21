@@ -1,1 +1,2 @@
 - Use bun instead of npm
+- To query the database: source .env && psql "$DATABASE_URL" -c "SELECT

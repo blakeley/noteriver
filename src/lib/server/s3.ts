@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { createHash } from 'crypto';
 import {
 	AWS_ACCESS_KEY_ID,
@@ -32,4 +32,27 @@ export async function uploadMidiToS3(
 	await s3Client.send(command);
 
 	return { s3key };
+}
+
+export async function getMidiFromS3(s3key: string): Promise<ArrayBuffer> {
+	const command = new GetObjectCommand({
+		Bucket: AWS_S3_BUCKET || 'noteriver.com',
+		Key: s3key
+	});
+
+	const response = await s3Client.send(command);
+	const stream = response.Body;
+
+	if (!stream) {
+		throw new Error('No body returned from S3');
+	}
+
+	const chunks: Uint8Array[] = [];
+	// @ts-ignore - Body is a readable stream
+	for await (const chunk of stream) {
+		chunks.push(chunk);
+	}
+
+	const buffer = Buffer.concat(chunks);
+	return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
 }
