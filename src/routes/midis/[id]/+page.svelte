@@ -4,6 +4,7 @@
 	import type { PageData } from './$types';
 	import MidiPlayer from '$lib/components/midi-player/MidiPlayer.svelte';
 	import AvatarFallback from '$lib/components/AvatarFallback.svelte';
+	import MidiThumbnail from '$lib/components/MidiThumbnail.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -169,10 +170,15 @@
 			<div class="space-y-4">
 				{#each data.otherMidis as midi}
 					<a href="/midis/{midi.id}" class="flex gap-3 rounded-lg hover:bg-gray-100">
-						<!-- Thumbnail placeholder -->
-						<div
-							class="h-24 w-40 flex-shrink-0 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600"
-						></div>
+						<!-- MIDI Thumbnail -->
+						<MidiThumbnail
+							s3key={midi.s3key}
+							width={160}
+							height={96}
+							startTime={0}
+							endTime={10}
+							class="flex-shrink-0 rounded-lg"
+						/>
 
 						<div class="min-w-0 flex-1">
 							<h4 class="line-clamp-2 text-sm font-semibold text-gray-900">
