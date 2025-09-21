@@ -51,14 +51,16 @@
 	});
 </script>
 
-<svg class="h-full w-full scale-y-[-1]" {viewBox} preserveAspectRatio="xMidYMin slice">
-	<SvgDefs />
+<div class="absolute inset-x-px top-0 bottom-px">
+	<svg class="h-full w-full scale-y-[-1]" {viewBox} preserveAspectRatio="xMidYMin slice">
+		<SvgDefs />
 
-	{#each keyboard.IVORY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
-		<IvoryKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
-	{/each}
+		{#each keyboard.IVORY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
+			<IvoryKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
+		{/each}
 
-	{#each keyboard.EBONY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
-		<EbonyKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
-	{/each}
-</svg>
+		{#each keyboard.EBONY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
+			<EbonyKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
+		{/each}
+	</svg>
+</div>

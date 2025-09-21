@@ -20,7 +20,7 @@
 			let binaryString = '';
 			const bytes = new Uint8Array(arrayBuffer);
 			for (let i = 0; i < bytes.length; i++) {
-				binaryString += String.fromCharCode(bytes[i]);
+				binaryString += String.fromCharCode(bytes[i]!);
 			}
 			midi = new jadin.Midi(binaryString);
 			loading = false;

@@ -82,9 +82,12 @@
 
 	onMount(() => {
 		if (canvasRef) {
-			height = canvasRef.clientHeight * window.devicePixelRatio;
-			width = canvasRef.clientWidth * window.devicePixelRatio;
-			draw();
+			// Use requestAnimationFrame to ensure canvas is properly sized
+			requestAnimationFrame(() => {
+				height = canvasRef.clientHeight * window.devicePixelRatio;
+				width = canvasRef.clientWidth * window.devicePixelRatio;
+				draw();
+			});
 		}
 	});
 
@@ -97,7 +100,10 @@
 	});
 
 	$effect(() => {
-		draw();
+		// Redraw when any dependencies change (including width/height)
+		if (width > 0 && height > 0) {
+			draw();
+		}
 	});
 </script>
 
