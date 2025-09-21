@@ -3,6 +3,100 @@
 	import type * as jadin from 'jadin';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 
+	interface TimeSignatureChange {
+		second: number;
+		numerator: number;
+		denominator: number;
+		beatsPerMeasure: number;
+	}
+
+	interface TempoChange {
+		second: number;
+		bpm: number;
+	}
+
+	function getMeasureBoundaries(midi: jadin.Midi, startTime: number, endTime: number): number[] {
+		const boundaries: number[] = [];
+
+		// Extract time signatures from events
+		const timeSignatures: TimeSignatureChange[] = [];
+		const tempoChanges: TempoChange[] = [];
+
+		// Get tempo events (already provided by jadin)
+		for (const event of midi.tempoEvents) {
+			const bpm = 60000000 / event.raw.microsecondsPerBeat;
+			tempoChanges.push({
+				second: event.second,
+				bpm: bpm
+			});
+		}
+
+		// Get time signature events from all events
+		for (const event of midi.events) {
+			if (event.raw.type === 'meta' && event.raw.subtype === 'timeSignature') {
+				const tsEvent = event.raw as jadin.TimeSignatureEvent;
+				timeSignatures.push({
+					second: event.second,
+					numerator: tsEvent.numerator,
+					denominator: tsEvent.denominator,
+					beatsPerMeasure: tsEvent.numerator
+				});
+			}
+		}
+
+		// Default values if none found
+		if (timeSignatures.length === 0) {
+			timeSignatures.push({
+				second: 0,
+				numerator: 4,
+				denominator: 4,
+				beatsPerMeasure: 4
+			});
+		}
+		if (tempoChanges.length === 0) {
+			tempoChanges.push({
+				second: 0,
+				bpm: 120
+			});
+		}
+
+		// Calculate measure boundaries
+		let currentTime = 0;
+		let currentTsIndex = 0;
+		let currentTempoIndex = 0;
+
+		while (currentTime < endTime) {
+			// Update indices if we've passed a change point
+			while (
+				currentTsIndex < timeSignatures.length - 1 &&
+				timeSignatures[currentTsIndex + 1].second <= currentTime
+			) {
+				currentTsIndex++;
+			}
+			while (
+				currentTempoIndex < tempoChanges.length - 1 &&
+				tempoChanges[currentTempoIndex + 1].second <= currentTime
+			) {
+				currentTempoIndex++;
+			}
+
+			const currentTs = timeSignatures[currentTsIndex];
+			const currentTempo = tempoChanges[currentTempoIndex];
+
+			// Calculate measure duration in seconds
+			const measureDuration = (currentTs.beatsPerMeasure / currentTempo.bpm) * 60;
+
+			// Add boundary if within range
+			if (currentTime >= startTime && currentTime <= endTime) {
+				boundaries.push(currentTime);
+			}
+
+			currentTime += measureDuration;
+		}
+
+		return boundaries;
+	}
+
 	let {
 		indexParity,
 		time,
@@ -52,6 +146,37 @@
 		ctx.translate(-lowMidiNumber.x, 0);
 		ctx.translate(0, keyboard.IVORY_HEIGHT);
 		ctx.translate(0, -start * timeScale);
+
+		// Draw horizontal measure lines
+		const measureBoundaries = getMeasureBoundaries(midi, start, start + duration);
+		ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+		ctx.lineWidth = 1 / scale;
+
+		for (const boundary of measureBoundaries) {
+			const y = boundary * timeScale;
+			ctx.beginPath();
+			ctx.moveTo(lowMidiNumber.x, y);
+			ctx.lineTo(highMidiNumber.x + highMidiNumber.width, y);
+			ctx.stroke();
+		}
+
+		// Draw vertical guide lines between B-C and E-F
+		ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+		ctx.lineWidth = 1 / scale; // Thin line that doesn't scale with zoom
+
+		for (let noteNum = lowNumber; noteNum <= highNumber; noteNum++) {
+			const noteMod = noteNum % 12;
+			// Draw line after B (11) and after E (4)
+			if (noteMod === 11 || noteMod === 4) {
+				const midiNum = new MidiNumber(noteNum);
+				const lineX = midiNum.x + midiNum.width;
+
+				ctx.beginPath();
+				ctx.moveTo(lineX, start * timeScale - keyboard.IVORY_HEIGHT);
+				ctx.lineTo(lineX, (start + duration) * timeScale);
+				ctx.stroke();
+			}
+		}
 
 		for (const track of midi.tracks) {
 			for (const note of track.notesOnDuring(start - 1, start + duration)) {
