@@ -51,7 +51,7 @@
 	});
 </script>
 
-<svg class="piano-roll" {viewBox} preserveAspectRatio="xMidYMin slice">
+<svg class="h-full w-full scale-y-[-1]" {viewBox} preserveAspectRatio="xMidYMin slice">
 	<SvgDefs />
 
 	{#each keyboard.IVORY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
@@ -62,11 +62,3 @@
 		<EbonyKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
 	{/each}
 </svg>
-
-<style>
-	.piano-roll {
-		width: 100%;
-		height: 100%;
-		transform: scaleY(-1);
-	}
-</style>

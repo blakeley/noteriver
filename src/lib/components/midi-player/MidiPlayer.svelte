@@ -123,10 +123,12 @@
 	});
 </script>
 
-<div class="midi-player">
+<div class="relative flex h-full w-full flex-col flex-nowrap overflow-hidden">
 	<PlayerControls {time} onClick={toggleIsPlaying} {isPlaying} />
 
-	<div class="player-video">
+	<div
+		class="relative h-full w-full flex-1 overflow-hidden bg-[#2c2c2c] bg-[radial-gradient(circle_at_center_bottom,#2c2c2c_70%,#202020)] [&_canvas]:absolute [&_canvas]:h-full [&_canvas]:w-full [&_svg]:absolute [&_svg]:h-full [&_svg]:w-full"
+	>
 		<ScrollOverlay
 			{onScroll}
 			height={durationInPixels}
@@ -138,37 +140,3 @@
 		<SvgKeyboard {midi} {time} />
 	</div>
 </div>
-
-<style>
-	.midi-player {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		flex-wrap: nowrap;
-		overflow: hidden;
-		width: 100%;
-		height: 100%;
-	}
-
-	.player-video {
-		position: relative;
-		background: #2c2c2c;
-		background-image: radial-gradient(circle at center bottom, #2c2c2c 70%, #202020);
-		overflow: hidden;
-		width: 100%;
-		height: 100%;
-		flex: 1;
-	}
-
-	:global(.player-video svg) {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-	}
-
-	:global(.player-video canvas) {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-	}
-</style>
