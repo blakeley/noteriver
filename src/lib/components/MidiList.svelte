@@ -10,9 +10,9 @@
 </script>
 
 <div class="h-full overflow-y-auto">
-	<div class="max-w-4xl mx-auto">
+	<div class="mx-auto my-4 max-w-4xl">
 		{#if midis.length === 0}
-			<div class="text-center py-12">
+			<div class="py-12 text-center">
 				<svg
 					class="mx-auto h-12 w-12 text-gray-400"
 					fill="none"
@@ -30,12 +30,11 @@
 				<p class="mt-1 text-sm text-gray-500">Get started by uploading a MIDI file.</p>
 			</div>
 		{:else}
-			<ul class="divide-y divide-gray-200 bg-white">
+			<ul class="divide-y divide-gray-200 rounded-lg bg-white shadow-md shadow-black/20">
 				{#each midis as midi (midi.id)}
 					<MidiListItem {midi} />
 				{/each}
 			</ul>
-
 		{/if}
 	</div>
 </div>

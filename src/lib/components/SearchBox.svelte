@@ -24,14 +24,14 @@
 			name="search"
 			bind:value={searchValue}
 			placeholder="Search MIDI files..."
-			class="w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+			class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 text-sm focus:border-transparent focus:ring-2 focus:outline-none"
 		/>
 		<button
 			type="submit"
 			aria-label="Search"
-			class="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-700"
+			class="absolute top-0 right-0 h-full px-3 text-gray-500 hover:text-gray-700"
 		>
-			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path
 					stroke-linecap="round"
 					stroke-linejoin="round"

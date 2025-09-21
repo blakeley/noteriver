@@ -1,9 +1,12 @@
+import colors from 'tailwindcss/colors';
+
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
 			colors: {
+				gray: colors.neutral,
 				primary: {
 					50: '#ecf7ff',
 					100: '#c3e7ff',

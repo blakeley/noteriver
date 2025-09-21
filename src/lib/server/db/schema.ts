@@ -1,4 +1,12 @@
-import { pgTable, serial, integer, text, timestamp, doublePrecision, primaryKey } from 'drizzle-orm/pg-core';
+import {
+	pgTable,
+	serial,
+	integer,
+	text,
+	timestamp,
+	doublePrecision,
+	primaryKey
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
@@ -28,18 +36,22 @@ export const midis = pgTable('midis', {
 	instruments: integer('instruments').array()
 });
 
-export const favorites = pgTable('favorites', {
-	userId: text('user_id')
-		.notNull()
-		.references(() => users.id),
-	midiId: integer('midi_id')
-		.notNull()
-		.references(() => midis.id)
-}, (table) => {
-	return {
-		pk: primaryKey({ columns: [table.userId, table.midiId] })
-	};
-});
+export const favorites = pgTable(
+	'favorites',
+	{
+		userId: text('user_id')
+			.notNull()
+			.references(() => users.id),
+		midiId: integer('midi_id')
+			.notNull()
+			.references(() => midis.id)
+	},
+	(table) => {
+		return {
+			pk: primaryKey({ columns: [table.userId, table.midiId] })
+		};
+	}
+);
 
 export const comments = pgTable('comments', {
 	id: serial('id').primaryKey(),

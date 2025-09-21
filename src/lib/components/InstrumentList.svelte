@@ -141,10 +141,14 @@
 	<ol class="flex items-center space-x-1">
 		{#each instruments as midiNumber (midiNumber)}
 			<li class="group relative">
-				<svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-					<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+				<svg class="h-5 w-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+					<path
+						d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+					/>
 				</svg>
-				<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+				<div
+					class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform rounded bg-gray-800 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100"
+				>
 					{MIDI_NUMBER_TO_INSTRUMENT_NAME[midiNumber] || `Instrument ${midiNumber}`}
 				</div>
 			</li>

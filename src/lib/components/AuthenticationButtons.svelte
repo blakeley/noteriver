@@ -28,7 +28,7 @@
 		<form method="POST" action="/logout">
 			<button
 				type="submit"
-				class="px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded-lg hover:bg-gray-700"
+				class="rounded-lg bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
 			>
 				Logout
 			</button>
@@ -44,14 +44,11 @@
 		</button>
 		<button
 			onclick={openSignupDialog}
-			class="px-4 py-2 text-sm font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-600"
+			class="bg-primary-500 hover:bg-primary-600 rounded-lg px-4 py-2 text-sm font-medium text-white"
 		>
 			Sign Up
 		</button>
 	</div>
 {/if}
 
-<AuthenticationDialog
-	open={showAuthDialog}
-	onClose={() => showAuthDialog = false}
-/>
+<AuthenticationDialog open={showAuthDialog} onClose={() => (showAuthDialog = false)} />

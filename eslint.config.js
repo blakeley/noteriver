@@ -32,6 +32,13 @@ export default defineConfig(
 			'no-restricted-imports': [
 				'error',
 				{
+					paths: [
+						{
+							name: 'drizzle-orm',
+							importNames: ['sql'],
+							message: 'Raw SQL string banned. Instead, use Drizzle ORM functions'
+						}
+					],
 					patterns: [
 						{
 							group: ['../*'],
@@ -40,10 +47,7 @@ export default defineConfig(
 					]
 				}
 			],
-			'@typescript-eslint/no-unused-vars': ['error', {
-				'argsIgnorePattern': '^_',
-				'varsIgnorePattern': '^_'
-			}],
+			'@typescript-eslint/no-unused-vars': 'error',
 			'svelte/no-navigation-without-resolve': 'off'
 		}
 	},

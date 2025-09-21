@@ -1,6 +1,6 @@
 import { db } from './db';
 import { midis, users, comments, favorites } from './db/schema';
-import { desc, ilike, eq, sql } from 'drizzle-orm';
+import { desc, ilike, eq, count } from 'drizzle-orm';
 
 export interface MidiWithRelations {
 	id: number;
@@ -35,41 +35,44 @@ export async function getMidiList(
 	const offset = page * limit;
 
 	try {
-		// Build the base query with aggregated counts
+		// Build the base query
 		const baseQuery = db
 			.select({
 				midi: midis,
-				createdBy: users,
-				commentsCount: sql<number>`(
-					SELECT COUNT(*)::int FROM ${comments}
-					WHERE ${comments.midiId} = ${midis.id}
-				)`,
-				favoritesCount: sql<number>`(
-					SELECT COUNT(*)::int FROM ${favorites}
-					WHERE ${favorites.midiId} = ${midis.id}
-				)`
+				createdBy: users
 			})
 			.from(midis)
 			.leftJoin(users, eq(midis.createdById, users.id));
 
 		// Apply search filter if provided
-		const query = searchQuery
-			? baseQuery.where(ilike(midis.title, `%${searchQuery}%`))
-			: baseQuery;
+		const query = searchQuery ? baseQuery.where(ilike(midis.title, `%${searchQuery}%`)) : baseQuery;
 
 		// Execute query with ordering and pagination
-		const results = await query
-			.orderBy(desc(midis.createdAt))
-			.limit(limit)
-			.offset(offset);
+		const results = await query.orderBy(desc(midis.createdAt)).limit(limit).offset(offset);
 
-		// Transform the results
-		const midiList: MidiWithRelations[] = results.map(row => ({
-			...row.midi,
-			createdBy: row.createdBy || undefined,
-			commentsCount: row.commentsCount || 0,
-			favoritesCount: row.favoritesCount || 0
-		}));
+		// Fetch counts separately for each midi
+		const midiList: MidiWithRelations[] = await Promise.all(
+			results.map(async (row) => {
+				// Get comments count
+				const [commentsResult] = await db
+					.select({ count: count() })
+					.from(comments)
+					.where(eq(comments.midiId, row.midi.id));
+
+				// Get favorites count
+				const [favoritesResult] = await db
+					.select({ count: count() })
+					.from(favorites)
+					.where(eq(favorites.midiId, row.midi.id));
+
+				return {
+					...row.midi,
+					createdBy: row.createdBy || undefined,
+					commentsCount: commentsResult?.count || 0,
+					favoritesCount: favoritesResult?.count || 0
+				};
+			})
+		);
 
 		return {
 			midis: midiList,

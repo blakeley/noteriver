@@ -55,9 +55,7 @@
 
 	const generateRandomNumber = $derived(seededRandom(user?.username || '43'));
 	const fill = $derived(
-		user?.username
-			? COLORS[Math.floor(generateRandomNumber() * COLORS.length)]
-			: '#999999'
+		user?.username ? COLORS[Math.floor(generateRandomNumber() * COLORS.length)] : '#999999'
 	);
 	const rotation = $derived(generateRandomNumber() * 360);
 </script>
@@ -74,7 +72,7 @@
 		style="height: {size}px; min-width: {size}px; border-color: {fill}; {style}"
 	>
 		<g style="transform: rotate({rotation}deg); transform-origin: center;">
-			{#each Array(NUMBER_OF_LINES) as _, index (index)}
+			{#each { length: NUMBER_OF_LINES }, index (index)}
 				{@const offset = Math.floor(generateRandomNumber() * NUMBER_OF_LINES * 2) / 2}
 				<rect
 					x={-offset}

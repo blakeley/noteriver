@@ -62,6 +62,7 @@
 		"vitest-browser-svelte": "^0.1.0"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.893.0",
 		"@neondatabase/serverless": "^0.10.4",
 		"@node-rs/argon2": "^2.0.2"
 	}
