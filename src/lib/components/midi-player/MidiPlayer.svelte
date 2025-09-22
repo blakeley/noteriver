@@ -18,11 +18,6 @@
 		thumbnail?: boolean;
 	} = $props();
 
-	const lowNumber = 21;
-	const highNumber = 108;
-	const width = 1280;
-	const height = 720;
-
 	let playerContainer: HTMLDivElement;
 
 	// Create reactive state object for context - single $state with all properties
@@ -33,10 +28,10 @@
 		isFullscreen: false,
 		loadedMidi: null as jadin.Midi | null,
 		scrollRatio: 0,
-		onScroll: (ratio: number) => {
-			playerState.scrollRatio = ratio;
-			playerState.time = ratio * windowHeightInSeconds - 1;
-		},
+		width: 1280,
+		height: 720,
+		lowMidiNumber: new MidiNumber(21),
+		highMidiNumber: new MidiNumber(108),
 		togglePlayPause: () => togglePlayPause()
 	});
 
@@ -68,9 +63,6 @@
 		}
 	}
 
-	const lowMidiNumber = new MidiNumber(lowNumber);
-	const highMidiNumber = new MidiNumber(highNumber);
-
 	const windowHeightInSeconds = $derived(
 		playerState.loadedMidi ? playerState.loadedMidi.duration + 2 : 1
 	);
@@ -79,8 +71,8 @@
 		playerState.loadedMidi
 			? playerState.loadedMidi.duration *
 					10 /* timeScale */ *
-					(width / height) *
-					(highMidiNumber.x - lowMidiNumber.x + keyboard.IVORY_WIDTH)
+					(playerState.width / playerState.height) *
+					(playerState.highMidiNumber.x - playerState.lowMidiNumber.x + keyboard.IVORY_WIDTH)
 			: 0
 	);
 
@@ -195,6 +187,8 @@
 <div
 	class="relative flex h-full w-full flex-col flex-nowrap overflow-hidden"
 	bind:this={playerContainer}
+	bind:clientWidth={playerState.width}
+	bind:clientHeight={playerState.height}
 >
 	{#if !thumbnail}
 		<PlayerControls />
@@ -212,7 +206,10 @@
 		{:then midiFile}
 			{#if !thumbnail}
 				<ScrollOverlay
-					onScroll={playerState.onScroll}
+					onScroll={(ratio) => {
+						playerState.scrollRatio = ratio;
+						playerState.time = ratio * windowHeightInSeconds - 1;
+					}}
 					height={durationInPixels}
 					scrollRatio={playerState.isPlaying
 						? (playerState.time + 1) / windowHeightInSeconds
