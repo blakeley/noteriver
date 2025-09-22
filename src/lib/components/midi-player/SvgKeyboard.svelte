@@ -10,45 +10,27 @@
 	const lowNumber = 21;
 	const highNumber = 108;
 
-	let keyStates = $state<{ [key: number]: number | undefined }>({});
-	let cursor = $state(midi.newCursor());
-	let prevTime = $state(0);
-
 	const vbx = $derived(new MidiNumber(lowNumber).x);
 	const vbw = $derived(new MidiNumber(highNumber).x - vbx + keyboard.IVORY_WIDTH);
 	const viewBox = $derived(`${vbx} 0 ${vbw} 1000`);
 
-	$effect(() => {
-		if (midi) {
-			cursor = midi.newCursor();
-			keyStates = {};
-		}
-	});
-
-	$effect(() => {
-		if (prevTime < time) {
-			for (const event of cursor.forward(time)) {
-				if (event.raw.type === 'channel') {
-					if (event.raw.subtype === 'noteOn') {
-						keyStates[event.raw.noteNumber] = event.track.index;
-					} else if (event.raw.subtype === 'noteOff') {
-						keyStates[event.raw.noteNumber] = undefined;
-					}
-				}
-			}
-		} else if (prevTime > time) {
-			for (const event of cursor.backward(time)) {
-				if (event.raw.type === 'channel') {
-					if (event.raw.subtype === 'noteOn') {
-						keyStates[event.raw.noteNumber] = undefined;
-					} else if (event.raw.subtype === 'noteOff') {
-						keyStates[event.raw.noteNumber] = event.track.index;
-					}
-				}
-			}
-		}
-		prevTime = time;
-	});
+	// Derive key states directly from notesOnAt
+	const keyStates = $derived(
+		midi.tracks
+			.flatMap((track) =>
+				track
+					.notesOnAt(time)
+					.filter((note) => note.number !== undefined)
+					.map((note) => ({ noteNumber: note.number!, trackIndex: track.index }))
+			)
+			.reduce(
+				(states, { noteNumber, trackIndex }) => ({
+					...states,
+					[noteNumber]: trackIndex
+				}),
+				{}
+			)
+	);
 </script>
 
 <div class="absolute inset-x-px top-0 bottom-px">
