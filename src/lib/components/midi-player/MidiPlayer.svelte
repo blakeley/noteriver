@@ -26,6 +26,8 @@
 	let isPlaying = $state(false);
 	let scrollRatio = $state(0);
 	let loadedMidi = $state<jadin.Midi | null>(null);
+	let isFullscreen = $state(false);
+	let playerContainer: HTMLDivElement;
 
 	let initialPositionSecond = 0;
 	let initialDateNow = 0;
@@ -128,18 +130,65 @@
 		}
 	}
 
+	function toggleFullscreen() {
+		if (!document.fullscreenElement) {
+			playerContainer
+				?.requestFullscreen()
+				.then(() => {
+					isFullscreen = true;
+				})
+				.catch((err) => {
+					console.error('Error attempting to enable fullscreen:', err);
+				});
+		} else {
+			document
+				.exitFullscreen()
+				.then(() => {
+					isFullscreen = false;
+				})
+				.catch((err) => {
+					console.error('Error attempting to exit fullscreen:', err);
+				});
+		}
+	}
+
 	onDestroy(() => {
 		if (typeof window !== 'undefined') {
 			Synthesizer.getInstance().stopAudio();
 			cancelAnimationFrame(requestedAnimationFrame);
 			clearTimeout(timeoutId as NodeJS.Timeout);
+			if (document.fullscreenElement) {
+				document.exitFullscreen();
+			}
 		}
+	});
+
+	// Listen for fullscreen changes (e.g., when user presses ESC)
+	$effect(() => {
+		const handleFullscreenChange = () => {
+			isFullscreen = !!document.fullscreenElement;
+		};
+
+		document.addEventListener('fullscreenchange', handleFullscreenChange);
+		return () => {
+			document.removeEventListener('fullscreenchange', handleFullscreenChange);
+		};
 	});
 </script>
 
-<div class="relative flex h-full w-full flex-col flex-nowrap overflow-hidden">
+<div
+	class="relative flex h-full w-full flex-col flex-nowrap overflow-hidden"
+	bind:this={playerContainer}
+>
 	{#if !thumbnail}
-		<PlayerControls {time} onClick={toggleIsPlaying} {isPlaying} />
+		<PlayerControls
+			{time}
+			duration={loadedMidi?.duration || 0}
+			{isPlaying}
+			{isFullscreen}
+			onPlayPause={toggleIsPlaying}
+			onFullscreen={toggleFullscreen}
+		/>
 	{/if}
 
 	<div

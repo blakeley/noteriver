@@ -19,6 +19,12 @@ export default {
 					800: '#003854',
 					900: '#001b2b'
 				}
+			},
+			textShadow: {
+				sm: '0 1px 2px rgba(0,0,0,0.25)',
+				DEFAULT: '0 2px 4px rgba(0,0,0,0.25)',
+				md: '0 0 2px rgba(0,0,0,0.5)',
+				lg: '0 8px 16px rgba(0,0,0,0.25)'
 			}
 		}
 	},
