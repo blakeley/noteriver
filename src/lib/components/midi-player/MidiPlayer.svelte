@@ -33,9 +33,11 @@
 		isFullscreen: false,
 		loadedMidi: null as jadin.Midi | null,
 		scrollRatio: 0,
-		togglePlayPause: () => toggleIsPlaying(),
-		toggleFullscreen: () => toggleFullscreen(),
-		onScroll: (ratio: number) => onScroll(ratio)
+		onScroll: (ratio: number) => {
+			playerState.scrollRatio = ratio;
+			playerState.time = ratio * windowHeightInSeconds - 1;
+		},
+		togglePlayPause: () => togglePlayPause()
 	});
 
 	let initialPositionSecond = 0;
@@ -82,27 +84,6 @@
 			: 0
 	);
 
-	function onScroll(ratio: number) {
-		playerState.scrollRatio = ratio;
-		playerState.time = ratio * windowHeightInSeconds - 1;
-	}
-
-	function toggleIsPlaying() {
-		if (playerState.isPlaying) {
-			playerState.isPlaying = false;
-			Synthesizer.getInstance().stopAudio();
-		} else {
-			initialPositionSecond = playerState.time;
-			initialDateNow = Date.now();
-			audioCursor?.backward(playerState.time);
-			audioCursor?.forward(playerState.time);
-
-			playerState.isPlaying = true;
-			sonate();
-			animate();
-		}
-	}
-
 	function animate() {
 		if (playerState.isPlaying) {
 			const elapsedSeconds = (Date.now() - initialDateNow) / 1000;
@@ -141,28 +122,6 @@
 		}
 	}
 
-	function toggleFullscreen() {
-		if (!document.fullscreenElement) {
-			playerContainer
-				?.requestFullscreen()
-				.then(() => {
-					playerState.isFullscreen = true;
-				})
-				.catch((err) => {
-					console.error('Error attempting to enable fullscreen:', err);
-				});
-		} else {
-			document
-				.exitFullscreen()
-				.then(() => {
-					playerState.isFullscreen = false;
-				})
-				.catch((err) => {
-					console.error('Error attempting to exit fullscreen:', err);
-				});
-		}
-	}
-
 	onDestroy(() => {
 		if (typeof window !== 'undefined') {
 			Synthesizer.getInstance().stopAudio();
@@ -185,6 +144,42 @@
 			document.removeEventListener('fullscreenchange', handleFullscreenChange);
 		};
 	});
+
+	// Handle fullscreen API when isFullscreen state changes
+	$effect(async () => {
+		const isCurrentlyFullscreen = !!document.fullscreenElement;
+
+		if (playerState.isFullscreen && !isCurrentlyFullscreen && playerContainer) {
+			try {
+				await playerContainer.requestFullscreen();
+			} catch (err) {
+				console.error('Error attempting to enable fullscreen:', err);
+				playerState.isFullscreen = false; // Revert on error
+			}
+		} else if (!playerState.isFullscreen && isCurrentlyFullscreen) {
+			try {
+				await document.exitFullscreen();
+			} catch (err) {
+				console.error('Error attempting to exit fullscreen:', err);
+				playerState.isFullscreen = true; // Revert on error
+			}
+		}
+	});
+
+	function togglePlayPause() {
+		if (playerState.isPlaying) {
+			playerState.isPlaying = false;
+			Synthesizer.getInstance().stopAudio();
+		} else {
+			initialPositionSecond = playerState.time;
+			initialDateNow = Date.now();
+			audioCursor?.backward(playerState.time);
+			audioCursor?.forward(playerState.time);
+			playerState.isPlaying = true;
+			sonate();
+			animate();
+		}
+	}
 
 	// Update duration when loadedMidi changes
 	$effect(() => {
@@ -217,7 +212,7 @@
 		{:then midiFile}
 			{#if !thumbnail}
 				<ScrollOverlay
-					{onScroll}
+					onScroll={playerState.onScroll}
 					height={durationInPixels}
 					scrollRatio={playerState.isPlaying
 						? (playerState.time + 1) / windowHeightInSeconds
