@@ -41,6 +41,9 @@
 			<IvoryKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
 		{/each}
 
+		<!-- Burgundy bar at the top of the keys -->
+		<rect x={vbx} y={keyboard.IVORY_HEIGHT - 0.12} width={vbw} height="0.12" fill="#800020" />
+
 		{#each keyboard.EBONY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
 			<EbonyKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
 		{/each}
