@@ -164,6 +164,16 @@
 		}
 	}
 
+	function handleKeydown(event: KeyboardEvent) {
+		// Toggle play/pause on spacebar
+		if (event.key === ' ') {
+			event.preventDefault(); // Prevent page scrolling
+			if (!thumbnail && playerState.loadedMidi) {
+				togglePlayPause();
+			}
+		}
+	}
+
 	// Update duration when loadedMidi changes
 	$effect(() => {
 		if (playerState.loadedMidi) {
@@ -176,10 +186,12 @@
 </script>
 
 <div
-	class="relative flex h-full w-full flex-col flex-nowrap overflow-hidden"
+	class="relative flex h-full w-full flex-col flex-nowrap overflow-hidden outline-none"
 	bind:this={playerContainer}
 	bind:clientWidth={playerState.width}
 	bind:clientHeight={playerState.height}
+	onkeydown={handleKeydown}
+	tabindex="0"
 >
 	<div
 		class="relative h-full w-full flex-1 overflow-hidden bg-[#2c2c2c] bg-[radial-gradient(circle_at_center_bottom,#2c2c2c_70%,#202020)]"
