@@ -17,7 +17,7 @@
 		<div class="flex items-center space-x-2">
 			<a
 				href="/midis/new"
-				class="bg-primary-500 hover:bg-primary-600 flex items-center space-x-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
+				class="flex items-center space-x-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"
 			>
 				<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"

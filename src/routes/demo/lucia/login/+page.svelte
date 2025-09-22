@@ -11,7 +11,7 @@
 		Username
 		<input
 			name="username"
-			class="focus:border-primary-500 focus:ring-primary-500 mt-1 rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:ring-2 focus:outline-none"
+			class="mt-1 rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:outline-none"
 		/>
 	</label>
 	<label>
@@ -19,15 +19,15 @@
 		<input
 			type="password"
 			name="password"
-			class="focus:border-primary-500 focus:ring-primary-500 mt-1 rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:ring-2 focus:outline-none"
+			class="mt-1 rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:outline-none"
 		/>
 	</label>
-	<button class="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white transition"
+	<button class="rounded-md bg-primary-600 px-4 py-2 text-white transition hover:bg-primary-700"
 		>Login</button
 	>
 	<button
 		formaction="?/register"
-		class="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white transition"
+		class="rounded-md bg-primary-600 px-4 py-2 text-white transition hover:bg-primary-700"
 		>Register</button
 	>
 </form>

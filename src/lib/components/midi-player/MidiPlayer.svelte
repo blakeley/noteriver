@@ -180,12 +180,8 @@
 	bind:clientWidth={playerState.width}
 	bind:clientHeight={playerState.height}
 >
-	{#if !thumbnail}
-		<PlayerControls />
-	{/if}
-
 	<div
-		class="relative h-full w-full flex-1 overflow-hidden bg-[#2c2c2c] bg-[radial-gradient(circle_at_center_bottom,#2c2c2c_70%,#202020)] [&_canvas]:absolute [&_canvas]:h-full [&_canvas]:w-full [&_svg]:absolute [&_svg]:h-full [&_svg]:w-full"
+		class="relative h-full w-full flex-1 overflow-hidden bg-[#2c2c2c] bg-[radial-gradient(circle_at_center_bottom,#2c2c2c_70%,#202020)]"
 	>
 		{#await loadMidiFromS3(s3key)}
 			<div class="flex h-full items-center justify-center">
@@ -202,6 +198,7 @@
 			<CanvasPianoRoll indexParity={false} />
 			{#if !thumbnail}
 				<SvgKeyboard />
+				<PlayerControls />
 			{/if}
 		{:catch error}
 			<div class="flex h-full items-center justify-center">

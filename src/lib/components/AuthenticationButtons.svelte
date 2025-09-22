@@ -44,7 +44,7 @@
 		</button>
 		<button
 			onclick={openSignupDialog}
-			class="bg-primary-500 hover:bg-primary-600 rounded-lg px-4 py-2 text-sm font-medium text-white"
+			class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"
 		>
 			Sign Up
 		</button>

@@ -24,7 +24,7 @@
 	<a href={`/midis/${midi.id}`} class="block p-4">
 		<div class="flex items-start justify-between">
 			<div class="flex-1">
-				<h3 class="hover:text-primary-600 text-lg font-semibold text-gray-900">
+				<h3 class="text-lg font-semibold text-gray-900 hover:text-primary-600">
 					{midi.title}
 				</h3>
 

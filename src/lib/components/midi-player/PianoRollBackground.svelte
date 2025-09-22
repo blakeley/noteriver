@@ -57,4 +57,9 @@
 	});
 </script>
 
-<canvas bind:this={canvasRef} height={playerState.height} width={playerState.width}></canvas>
+<canvas
+	class="absolute h-full w-full"
+	bind:this={canvasRef}
+	height={playerState.height}
+	width={playerState.width}
+></canvas>

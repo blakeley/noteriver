@@ -24,7 +24,7 @@
 			name="search"
 			bind:value={searchValue}
 			placeholder="Search MIDI files..."
-			class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 text-sm focus:border-transparent focus:ring-2 focus:outline-none"
+			class="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 text-sm focus:border-transparent focus:ring-2 focus:ring-primary-500 focus:outline-none"
 		/>
 		<button
 			type="submit"
