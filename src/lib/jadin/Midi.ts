@@ -2,7 +2,7 @@ import MidiReader from './MidiReader';
 import Track from './Track';
 import Cursor from './Cursor';
 import { Event } from './Event';
-import type { RawEvent, SetTempoEvent } from './Event';
+import type { RawEvent, SetTempoEvent, TimeSignatureEvent } from './Event';
 import type Note from './Note';
 
 declare global {
@@ -126,5 +126,87 @@ export default class Midi {
 		return [].concat(
 			...(this.tracks.map((track) => track.notesOnDuring(onSecond, offSecond)) as any)
 		);
+	}
+
+	getMeasureBoundaries(startTime: number, endTime: number) {
+		const boundaries = [];
+		const timeSignatures = [];
+		const tempoChanges = [];
+
+		// Get tempo events
+		for (const event of this.tempoEvents) {
+			const bpm = 60000000 / event.raw.microsecondsPerBeat;
+			tempoChanges.push({
+				second: event.second,
+				bpm: bpm
+			});
+		}
+
+		// Get time signature events from all events
+		for (const event of this.events) {
+			if (event.raw.type === 'meta' && event.raw.subtype === 'timeSignature') {
+				const tsEvent = event.raw as TimeSignatureEvent;
+				timeSignatures.push({
+					second: event.second,
+					numerator: tsEvent.numerator,
+					denominator: tsEvent.denominator,
+					beatsPerMeasure: tsEvent.numerator
+				});
+			}
+		}
+
+		// Default values if none found
+		if (timeSignatures.length === 0) {
+			timeSignatures.push({
+				second: 0,
+				numerator: 4,
+				denominator: 4,
+				beatsPerMeasure: 4
+			});
+		}
+		if (tempoChanges.length === 0) {
+			tempoChanges.push({
+				second: 0,
+				bpm: 120
+			});
+		}
+
+		// Calculate measure boundaries
+		let currentTime = 0;
+		let currentTsIndex = 0;
+		let currentTempoIndex = 0;
+
+		while (currentTime < endTime) {
+			// Update indices if we've passed a change point
+			while (
+				currentTsIndex < timeSignatures.length - 1 &&
+				timeSignatures[currentTsIndex + 1].second <= currentTime
+			) {
+				currentTsIndex++;
+			}
+			while (
+				currentTempoIndex < tempoChanges.length - 1 &&
+				tempoChanges[currentTempoIndex + 1].second <= currentTime
+			) {
+				currentTempoIndex++;
+			}
+
+			const currentTs = timeSignatures[currentTsIndex];
+			const currentTempo = tempoChanges[currentTempoIndex];
+
+			if (!currentTs || !currentTempo) break;
+
+			// Calculate measure duration in seconds
+			const measureDuration = (currentTs.beatsPerMeasure / currentTempo.bpm) * 60;
+
+			// Add boundary if within range
+			if (currentTime >= startTime && currentTime <= endTime) {
+				boundaries.push(currentTime);
+			}
+
+			currentTime += measureDuration;
+		}
+
+		return boundaries;
 	}
 }

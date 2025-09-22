@@ -1,103 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type * as jadin from 'jadin';
 	import { getPlayerContext } from '$lib/midi-player/context';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import { createHorizontalGradient } from '$lib/utils/colorGradient';
-
-	interface TimeSignatureChange {
-		second: number;
-		numerator: number;
-		denominator: number;
-		beatsPerMeasure: number;
-	}
-
-	interface TempoChange {
-		second: number;
-		bpm: number;
-	}
-
-	function getMeasureBoundaries(midi: jadin.Midi, startTime: number, endTime: number): number[] {
-		const boundaries: number[] = [];
-
-		// Extract time signatures from events
-		const timeSignatures: TimeSignatureChange[] = [];
-		const tempoChanges: TempoChange[] = [];
-
-		// Get tempo events (already provided by jadin)
-		for (const event of midi.tempoEvents) {
-			const bpm = 60000000 / event.raw.microsecondsPerBeat;
-			tempoChanges.push({
-				second: event.second,
-				bpm: bpm
-			});
-		}
-
-		// Get time signature events from all events
-		for (const event of midi.events) {
-			if (event.raw.type === 'meta' && event.raw.subtype === 'timeSignature') {
-				const tsEvent = event.raw as jadin.TimeSignatureEvent;
-				timeSignatures.push({
-					second: event.second,
-					numerator: tsEvent.numerator,
-					denominator: tsEvent.denominator,
-					beatsPerMeasure: tsEvent.numerator
-				});
-			}
-		}
-
-		// Default values if none found
-		if (timeSignatures.length === 0) {
-			timeSignatures.push({
-				second: 0,
-				numerator: 4,
-				denominator: 4,
-				beatsPerMeasure: 4
-			});
-		}
-		if (tempoChanges.length === 0) {
-			tempoChanges.push({
-				second: 0,
-				bpm: 120
-			});
-		}
-
-		// Calculate measure boundaries
-		let currentTime = 0;
-		let currentTsIndex = 0;
-		let currentTempoIndex = 0;
-
-		while (currentTime < endTime) {
-			// Update indices if we've passed a change point
-			while (
-				currentTsIndex < timeSignatures.length - 1 &&
-				timeSignatures[currentTsIndex + 1].second <= currentTime
-			) {
-				currentTsIndex++;
-			}
-			while (
-				currentTempoIndex < tempoChanges.length - 1 &&
-				tempoChanges[currentTempoIndex + 1].second <= currentTime
-			) {
-				currentTempoIndex++;
-			}
-
-			const currentTs = timeSignatures[currentTsIndex];
-			const currentTempo = tempoChanges[currentTempoIndex];
-
-			// Calculate measure duration in seconds
-			const measureDuration = (currentTs.beatsPerMeasure / currentTempo.bpm) * 60;
-
-			// Add boundary if within range
-			if (currentTime >= startTime && currentTime <= endTime) {
-				boundaries.push(currentTime);
-			}
-
-			currentTime += measureDuration;
-		}
-
-		return boundaries;
-	}
 
 	const playerState = getPlayerContext();
 
@@ -144,11 +49,7 @@
 		ctx.translate(0, -start * playerState.timeScale);
 
 		// Draw horizontal measure lines
-		const measureBoundaries = getMeasureBoundaries(
-			playerState.loadedMidi!,
-			start,
-			start + duration
-		);
+		const measureBoundaries = playerState.loadedMidi!.getMeasureBoundaries(start, start + duration);
 		ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
 		ctx.lineWidth = 1 / scale;
 
