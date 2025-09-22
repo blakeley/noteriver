@@ -7,6 +7,7 @@
 	import CanvasPianoRoll from './CanvasPianoRoll.svelte';
 	import PianoRollBackground from './PianoRollBackground.svelte';
 	import PlayerControls from './PlayerControls.svelte';
+	import PlayPauseFlash from './PlayPauseFlash.svelte';
 	import ScrollOverlay from './ScrollOverlay.svelte';
 	import SvgKeyboard from './SvgKeyboard.svelte';
 
@@ -192,6 +193,7 @@
 		{:then midiFile}
 			{#if !thumbnail}
 				<ScrollOverlay />
+				<PlayPauseFlash />
 			{/if}
 			<PianoRollBackground />
 			<CanvasPianoRoll indexParity={true} />
