@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onMount, getContext } from 'svelte';
+	import { onMount } from 'svelte';
 	import type * as jadin from 'jadin';
-	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
+	import { getPlayerContext } from '$lib/midi-player/context';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import { createHorizontalGradient } from '$lib/utils/colorGradient';
 
@@ -99,7 +99,7 @@
 		return boundaries;
 	}
 
-	const playerState = getContext(PLAYER_CONTEXT_KEY);
+	const playerState = getPlayerContext();
 
 	let {
 		indexParity
@@ -109,19 +109,15 @@
 
 	let canvasRef: HTMLCanvasElement;
 	let index = $state(0);
-	let width = $state(1280);
-	let height = $state(720);
 
-	const lowNumber = 21;
-	const highNumber = 108;
-	const timeScale = 10; // Number of ivory key widths in one second of piano roll
+	const scale = $derived(
+		playerState.width /
+			(playerState.highMidiNumber.x -
+				playerState.lowMidiNumber.x +
+				playerState.highMidiNumber.width)
+	);
 
-	const lowMidiNumber = new MidiNumber(lowNumber);
-	const highMidiNumber = new MidiNumber(highNumber);
-
-	const scale = $derived(width / (highMidiNumber.x - lowMidiNumber.x + highMidiNumber.width));
-
-	const duration = $derived(height / (scale * timeScale));
+	const duration = $derived(playerState.height / (scale * playerState.timeScale));
 
 	const currentIndex = $derived(() => {
 		let idx = Math.floor(playerState.time / duration);
@@ -143,9 +139,9 @@
 
 		ctx.translate(0, canvasRef.height);
 		ctx.scale(scale, -scale);
-		ctx.translate(-lowMidiNumber.x, 0);
+		ctx.translate(-playerState.lowMidiNumber.x, 0);
 		ctx.translate(0, keyboard.IVORY_HEIGHT);
-		ctx.translate(0, -start * timeScale);
+		ctx.translate(0, -start * playerState.timeScale);
 
 		// Draw horizontal measure lines
 		const measureBoundaries = getMeasureBoundaries(
@@ -157,10 +153,10 @@
 		ctx.lineWidth = 1 / scale;
 
 		for (const boundary of measureBoundaries) {
-			const y = boundary * timeScale;
+			const y = boundary * playerState.timeScale;
 			ctx.beginPath();
-			ctx.moveTo(lowMidiNumber.x, y);
-			ctx.lineTo(highMidiNumber.x + highMidiNumber.width, y);
+			ctx.moveTo(playerState.lowMidiNumber.x, y);
+			ctx.lineTo(playerState.highMidiNumber.x + playerState.highMidiNumber.width, y);
 			ctx.stroke();
 		}
 
@@ -168,7 +164,7 @@
 		ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
 		ctx.lineWidth = 1 / scale; // Thin line that doesn't scale with zoom
 
-		for (let noteNum = lowNumber; noteNum <= highNumber; noteNum++) {
+		for (let noteNum = playerState.lowNumber; noteNum <= playerState.highNumber; noteNum++) {
 			const noteMod = noteNum % 12;
 			// Draw line after B (11) and after E (4)
 			if (noteMod === 11 || noteMod === 4) {
@@ -176,8 +172,8 @@
 				const lineX = midiNum.x + midiNum.width;
 
 				ctx.beginPath();
-				ctx.moveTo(lineX, start * timeScale - keyboard.IVORY_HEIGHT);
-				ctx.lineTo(lineX, (start + duration) * timeScale);
+				ctx.moveTo(lineX, start * playerState.timeScale - keyboard.IVORY_HEIGHT);
+				ctx.lineTo(lineX, (start + duration) * playerState.timeScale);
 				ctx.stroke();
 			}
 		}
@@ -194,9 +190,9 @@
 				ctx.lineWidth = midiNumber.width / 16;
 
 				const x = midiNumber.x + ctx.lineWidth / 2;
-				const y = note.onSecond! * timeScale;
+				const y = note.onSecond! * playerState.timeScale;
 				const w = midiNumber.width - ctx.lineWidth;
-				const h = note.duration * timeScale;
+				const h = note.duration * playerState.timeScale;
 				const r = midiNumber.width / 4;
 
 				// Use culori-based gradient for perceptually uniform color manipulation
@@ -220,8 +216,6 @@
 		if (canvasRef) {
 			// Use requestAnimationFrame to ensure canvas is properly sized
 			requestAnimationFrame(() => {
-				height = canvasRef.clientHeight * window.devicePixelRatio;
-				width = canvasRef.clientWidth * window.devicePixelRatio;
 				draw();
 			});
 		}
@@ -237,11 +231,15 @@
 
 	$effect(() => {
 		// Redraw when any dependencies change (including width/height)
-		if (width > 0 && height > 0) {
+		if (playerState.width > 0 && playerState.height > 0) {
 			draw();
 		}
 	});
 </script>
 
-<canvas bind:this={canvasRef} {height} {width} style="transform: translateY({translateY}%)"
+<canvas
+	bind:this={canvasRef}
+	height={playerState.height}
+	width={playerState.width}
+	style="transform: translateY({translateY}%)"
 ></canvas>

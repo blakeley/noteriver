@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onDestroy, setContext } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import * as jadin from 'jadin';
 	import { Synthesizer } from '$lib/midi-player/synthesizer';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
-	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
+	import { setPlayerContext } from '$lib/midi-player/context';
 	import CanvasPianoRoll from './CanvasPianoRoll.svelte';
 	import PianoRollBackground from './PianoRollBackground.svelte';
 	import PlayerControls from './PlayerControls.svelte';
@@ -30,8 +30,11 @@
 		scrollRatio: 0,
 		width: 1280,
 		height: 720,
+		lowNumber: 21,
+		highNumber: 108,
 		lowMidiNumber: new MidiNumber(21),
 		highMidiNumber: new MidiNumber(108),
+		timeScale: 10, // Number of ivory key widths in one second of piano roll
 		togglePlayPause: () => togglePlayPause()
 	});
 
@@ -70,7 +73,7 @@
 	const durationInPixels = $derived(
 		playerState.loadedMidi
 			? playerState.loadedMidi.duration *
-					10 /* timeScale */ *
+					playerState.timeScale *
 					(playerState.width / playerState.height) *
 					(playerState.highMidiNumber.x - playerState.lowMidiNumber.x + keyboard.IVORY_WIDTH)
 			: 0
@@ -181,7 +184,7 @@
 	});
 
 	// Set the player context
-	setContext(PLAYER_CONTEXT_KEY, playerState);
+	setPlayerContext(playerState);
 </script>
 
 <div

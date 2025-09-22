@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
-	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
+	import { getPlayerContext } from '$lib/midi-player/context';
 
-	const playerState = getContext(PLAYER_CONTEXT_KEY);
+	const playerState = getPlayerContext();
 
 	function formatTime(seconds: number): string {
 		if (!isFinite(seconds) || seconds < 0) return '0:00';

@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
+	import { getPlayerContext } from '$lib/midi-player/context';
+
+	const playerState = getPlayerContext();
 
 	let canvasRef: HTMLCanvasElement;
-	let width = $state(1280);
-	let height = $state(720);
 
-	const lowNumber = 21;
-	const highNumber = 108;
-
-	const lowMidiNumber = $derived(new MidiNumber(lowNumber));
-	const highMidiNumber = $derived(new MidiNumber(highNumber));
-
-	const scale = $derived(width / (highMidiNumber.x - lowMidiNumber.x + highMidiNumber.width));
+	const scale = $derived(
+		playerState.width /
+			(playerState.highMidiNumber.x -
+				playerState.lowMidiNumber.x +
+				playerState.highMidiNumber.width)
+	);
 
 	function draw() {
 		if (!canvasRef) return;
@@ -21,9 +21,9 @@
 		ctx.resetTransform();
 		ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
 
-		ctx.translate(0, height);
+		ctx.translate(0, canvasRef.height);
 		ctx.scale(scale, -scale);
-		ctx.translate(-lowMidiNumber.x, 0);
+		ctx.translate(-playerState.lowMidiNumber.x, 0);
 
 		// Draw C note lines
 		ctx.fillStyle = '#555555';
@@ -31,7 +31,7 @@
 			const lineWidth = keyboard.IVORY_WIDTH / 20;
 			const x = cMidiNumber.x - lineWidth / 2;
 			const y = 0;
-			const lineHeight = height / scale;
+			const lineHeight = canvasRef.height / scale;
 			ctx.fillRect(x, y, lineWidth, lineHeight);
 		}
 
@@ -41,15 +41,13 @@
 			const lineWidth = keyboard.IVORY_WIDTH / 20;
 			const x = fMidiNumber.x - lineWidth / 2;
 			const y = 0;
-			const lineHeight = height / scale;
+			const lineHeight = canvasRef.height / scale;
 			ctx.fillRect(x, y, lineWidth, lineHeight);
 		}
 	}
 
 	onMount(() => {
 		if (canvasRef) {
-			height = canvasRef.clientHeight * window.devicePixelRatio;
-			width = canvasRef.clientWidth * window.devicePixelRatio;
 			draw();
 		}
 	});
@@ -59,4 +57,4 @@
 	});
 </script>
 
-<canvas bind:this={canvasRef} {height} {width}></canvas>
+<canvas bind:this={canvasRef} height={playerState.height} width={playerState.width}></canvas>

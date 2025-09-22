@@ -1,18 +1,14 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
-	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
+	import { getPlayerContext } from '$lib/midi-player/context';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import SvgDefs from './SvgDefs.svelte';
 	import IvoryKey from './IvoryKey.svelte';
 	import EbonyKey from './EbonyKey.svelte';
 
-	const playerState = getContext(PLAYER_CONTEXT_KEY);
+	const playerState = getPlayerContext();
 
-	const lowNumber = 21;
-	const highNumber = 108;
-
-	const vbx = $derived(new MidiNumber(lowNumber).x);
-	const vbw = $derived(new MidiNumber(highNumber).x - vbx + keyboard.IVORY_WIDTH);
+	const vbx = $derived(playerState.lowMidiNumber.x);
+	const vbw = $derived(playerState.highMidiNumber.x - vbx + keyboard.IVORY_WIDTH);
 	const viewBox = $derived(`${vbx} 0 ${vbw} 1000`);
 
 	// Derive key states directly from notesOnAt
