@@ -66,19 +66,6 @@
 		}
 	}
 
-	const windowHeightInSeconds = $derived(
-		playerState.loadedMidi ? playerState.loadedMidi.duration + 2 : 1
-	);
-
-	const durationInPixels = $derived(
-		playerState.loadedMidi
-			? playerState.loadedMidi.duration *
-					playerState.timeScale *
-					(playerState.width / playerState.height) *
-					(playerState.highMidiNumber.x - playerState.lowMidiNumber.x + keyboard.IVORY_WIDTH)
-			: 0
-	);
-
 	function animate() {
 		if (playerState.isPlaying) {
 			const elapsedSeconds = (Date.now() - initialDateNow) / 1000;
@@ -208,16 +195,7 @@
 			</div>
 		{:then midiFile}
 			{#if !thumbnail}
-				<ScrollOverlay
-					onScroll={(ratio) => {
-						playerState.scrollRatio = ratio;
-						playerState.time = ratio * windowHeightInSeconds - 1;
-					}}
-					height={durationInPixels}
-					scrollRatio={playerState.isPlaying
-						? (playerState.time + 1) / windowHeightInSeconds
-						: playerState.scrollRatio}
-				/>
+				<ScrollOverlay />
 			{/if}
 			<PianoRollBackground />
 			<CanvasPianoRoll indexParity={true} />
