@@ -1,31 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import * as jadin from 'jadin';
 	import type { PageData } from './$types';
 	import MidiPlayer from '$lib/components/midi-player/MidiPlayer.svelte';
 	import AvatarFallback from '$lib/components/AvatarFallback.svelte';
 
 	let { data }: { data: PageData } = $props();
 
-	let midi = $state<jadin.Midi | null>(null);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
 	let showFullDescription = $state(false);
-
-	onMount(async () => {
-		try {
-			// Convert base64 back to binary string
-			const binaryString = atob(data.midiBase64);
-
-			// Parse the MIDI file - jadin expects a binary string
-			midi = new jadin.Midi(binaryString);
-			loading = false;
-		} catch (err) {
-			console.error('Error parsing MIDI:', err);
-			error = 'Failed to parse MIDI file';
-			loading = false;
-		}
-	});
 
 	function formatDuration(seconds: number): string {
 		const mins = Math.floor(seconds / 60);
@@ -61,19 +41,7 @@
 			<div
 				class="relative aspect-video w-full overflow-hidden rounded-xl bg-black shadow-xl after:absolute after:inset-0 after:rounded-xl after:border-2 after:border-black/50"
 			>
-				{#if loading}
-					<div class="flex h-full items-center justify-center">
-						<div
-							class="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-gray-700"
-						></div>
-					</div>
-				{:else if error}
-					<div class="flex h-full items-center justify-center text-red-500">
-						<p>{error}</p>
-					</div>
-				{:else if midi}
-					<MidiPlayer {midi} />
-				{/if}
+				<MidiPlayer s3key={data.midiData.s3key} />
 			</div>
 
 			<!-- Video Title -->

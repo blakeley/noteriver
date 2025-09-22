@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import * as jadin from 'jadin';
 	import { Synthesizer } from '$lib/midi-player/synthesizer';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
@@ -10,12 +10,10 @@
 	import SvgKeyboard from './SvgKeyboard.svelte';
 
 	let {
-		midi,
 		s3key,
 		thumbnail = false
 	}: {
-		midi?: jadin.Midi;
-		s3key?: string;
+		s3key: string;
 		thumbnail?: boolean;
 	} = $props();
 
@@ -27,14 +25,35 @@
 	let time = $state(thumbnail ? 2 : -1);
 	let isPlaying = $state(false);
 	let scrollRatio = $state(0);
-	let loadedMidi = $state<jadin.Midi | null>(midi || null);
-	let loading = $state(!midi && !!s3key);
+	let loadedMidi = $state<jadin.Midi | null>(null);
 
 	let initialPositionSecond = 0;
 	let initialDateNow = 0;
 	const audioCursor = $derived(loadedMidi?.newCursor());
 	let requestedAnimationFrame = 0;
 	let timeoutId: number | NodeJS.Timeout = 0;
+
+	// Function to load MIDI from S3
+	async function loadMidiFromS3(key: string): Promise<jadin.Midi> {
+		try {
+			const response = await fetch(`/api/midis/s3/${encodeURIComponent(key)}`);
+			if (response.ok) {
+				const { midiBase64 } = await response.json();
+				const binaryString = atob(midiBase64);
+				const midiFile = new jadin.Midi(binaryString);
+				loadedMidi = midiFile;
+				if (!thumbnail) {
+					loadAudioBuffers(midiFile);
+				}
+				return midiFile;
+			} else {
+				throw new Error('Failed to load MIDI from S3');
+			}
+		} catch (error) {
+			console.error('Failed to load MIDI:', error);
+			throw error;
+		}
+	}
 
 	const lowMidiNumber = new MidiNumber(lowNumber);
 	const highMidiNumber = new MidiNumber(highNumber);
@@ -101,59 +120,19 @@
 		}
 	}
 
-	onMount(async () => {
-		// Load MIDI if s3key provided
-		if (s3key && !loadedMidi) {
-			try {
-				const response = await fetch(`/api/midis/s3/${encodeURIComponent(s3key)}`);
-				if (response.ok) {
-					const { midiBase64 } = await response.json();
-					const binaryString = atob(midiBase64);
-					loadedMidi = new jadin.Midi(binaryString);
-					loading = false;
-				}
-			} catch (error) {
-				console.error('Failed to load MIDI:', error);
-				loading = false;
+	async function loadAudioBuffers(midiFile: jadin.Midi) {
+		for (const event of midiFile.events) {
+			if (event.raw.type === 'channel' && event.raw.subtype === 'noteOn') {
+				await Synthesizer.getInstance().loadBuffer(event as jadin.Event<jadin.NoteOnEvent>);
 			}
 		}
-
-		// Load audio buffers for all notes
-		if (loadedMidi) {
-			for (const event of loadedMidi.events) {
-				if (event.raw.type === 'channel' && event.raw.subtype === 'noteOn') {
-					await Synthesizer.getInstance().loadBuffer(event as jadin.Event<jadin.NoteOnEvent>);
-				}
-			}
-		}
-	});
+	}
 
 	onDestroy(() => {
 		if (typeof window !== 'undefined') {
 			Synthesizer.getInstance().stopAudio();
 			cancelAnimationFrame(requestedAnimationFrame);
 			clearTimeout(timeoutId as NodeJS.Timeout);
-		}
-	});
-
-	$effect(() => {
-		if (midi && midi !== loadedMidi) {
-			loadedMidi = midi;
-			loading = false;
-			if (typeof window !== 'undefined') {
-				cancelAnimationFrame(requestedAnimationFrame);
-				clearTimeout(timeoutId as NodeJS.Timeout);
-				Synthesizer.getInstance().stopAudio();
-			}
-			time = thumbnail ? 2 : -1;
-			isPlaying = false;
-
-			// Load audio buffers for all notes
-			for (const event of loadedMidi.events) {
-				if (event.raw.type === 'channel' && event.raw.subtype === 'noteOn') {
-					Synthesizer.getInstance().loadBuffer(event as jadin.Event<jadin.NoteOnEvent>);
-				}
-			}
 		}
 	});
 </script>
@@ -166,13 +145,13 @@
 	<div
 		class="relative h-full w-full flex-1 overflow-hidden bg-[#2c2c2c] bg-[radial-gradient(circle_at_center_bottom,#2c2c2c_70%,#202020)] [&_canvas]:absolute [&_canvas]:h-full [&_canvas]:w-full [&_svg]:absolute [&_svg]:h-full [&_svg]:w-full"
 	>
-		{#if loading}
+		{#await loadMidiFromS3(s3key)}
 			<div class="flex h-full items-center justify-center">
 				<div
 					class="h-8 w-8 animate-spin rounded-full border-2 border-gray-400 border-t-gray-200"
 				></div>
 			</div>
-		{:else if loadedMidi}
+		{:then midiFile}
 			{#if !thumbnail}
 				<ScrollOverlay
 					{onScroll}
@@ -181,11 +160,15 @@
 				/>
 			{/if}
 			<PianoRollBackground />
-			<CanvasPianoRoll midi={loadedMidi} {time} indexParity={true} />
-			<CanvasPianoRoll midi={loadedMidi} {time} indexParity={false} />
+			<CanvasPianoRoll midi={midiFile} {time} indexParity={true} />
+			<CanvasPianoRoll midi={midiFile} {time} indexParity={false} />
 			{#if !thumbnail}
-				<SvgKeyboard midi={loadedMidi} {time} />
+				<SvgKeyboard midi={midiFile} {time} />
 			{/if}
-		{/if}
+		{:catch error}
+			<div class="flex h-full items-center justify-center">
+				<p class="text-red-500">Failed to load MIDI: {error?.message || error}</p>
+			</div>
+		{/await}
 	</div>
 </div>
