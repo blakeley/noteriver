@@ -22,7 +22,7 @@
 	const width = 1280;
 	const height = 720;
 
-	let time = $state(thumbnail ? 2 : 1);
+	let time = $state(thumbnail ? 2 : -1);
 	let isPlaying = $state(false);
 	let scrollRatio = $state(0);
 	let loadedMidi = $state<jadin.Midi | null>(null);
@@ -71,7 +71,7 @@
 
 	function onScroll(ratio: number) {
 		scrollRatio = ratio;
-		time = Math.max(0, ratio * windowHeightInSeconds - 1);
+		time = ratio * windowHeightInSeconds - 1;
 	}
 
 	function toggleIsPlaying() {

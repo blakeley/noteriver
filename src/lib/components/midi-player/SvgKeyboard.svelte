@@ -44,5 +44,9 @@
 		{#each keyboard.EBONY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
 			<EbonyKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
 		{/each}
+
+		<!-- Gray felt line above keys -->
+		<rect x={vbx} y={5.5} width={vbw} height="0.125" fill="#3a3a3a" />
+		<rect x={vbx} y={5.625} width={vbw} height="0.025" fill="#1a1a1a" />
 	</svg>
 </div>
