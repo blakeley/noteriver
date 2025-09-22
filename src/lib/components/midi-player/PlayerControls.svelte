@@ -1,19 +1,8 @@
 <script lang="ts">
-	let {
-		time,
-		duration,
-		isPlaying,
-		isFullscreen = false,
-		onPlayPause,
-		onFullscreen
-	}: {
-		time: number;
-		duration: number;
-		isPlaying: boolean;
-		isFullscreen?: boolean;
-		onPlayPause: () => void;
-		onFullscreen: () => void;
-	} = $props();
+	import { getContext } from 'svelte';
+	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
+
+	const playerState = getContext(PLAYER_CONTEXT_KEY);
 
 	function formatTime(seconds: number): string {
 		if (!isFinite(seconds) || seconds < 0) return '0:00';
@@ -22,8 +11,8 @@
 		return `${mins}:${secs.toString().padStart(2, '0')}`;
 	}
 
-	const currentTime = $derived(formatTime(Math.max(0, time)));
-	const totalTime = $derived(formatTime(duration));
+	const currentTime = $derived(formatTime(Math.max(0, playerState.time)));
+	const totalTime = $derived(formatTime(playerState.duration));
 </script>
 
 <div
@@ -33,10 +22,10 @@
 		<!-- Play/Pause Button -->
 		<button
 			class="flex aspect-square h-full cursor-pointer items-center justify-center"
-			onclick={onPlayPause}
-			aria-label={isPlaying ? 'Pause' : 'Play'}
+			onclick={playerState.togglePlayPause}
+			aria-label={playerState.isPlaying ? 'Pause' : 'Play'}
 		>
-			{#if isPlaying}
+			{#if playerState.isPlaying}
 				<svg
 					class="h-8 w-8"
 					fill="currentColor"
@@ -68,10 +57,10 @@
 	<!-- Fullscreen Button -->
 	<button
 		class="flex aspect-square h-full cursor-pointer items-center justify-center"
-		onclick={onFullscreen}
-		aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+		onclick={playerState.toggleFullscreen}
+		aria-label={playerState.isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 	>
-		{#if isFullscreen}
+		{#if playerState.isFullscreen}
 			<!-- Exit fullscreen icon -->
 			<svg
 				class="h-8 w-8"

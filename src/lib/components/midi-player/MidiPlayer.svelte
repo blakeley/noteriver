@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onDestroy, setContext } from 'svelte';
 	import * as jadin from 'jadin';
 	import { Synthesizer } from '$lib/midi-player/synthesizer';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
+	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
 	import CanvasPianoRoll from './CanvasPianoRoll.svelte';
 	import PianoRollBackground from './PianoRollBackground.svelte';
 	import PlayerControls from './PlayerControls.svelte';
@@ -22,16 +23,24 @@
 	const width = 1280;
 	const height = 720;
 
-	let time = $state(thumbnail ? 2 : -1);
-	let isPlaying = $state(false);
-	let scrollRatio = $state(0);
-	let loadedMidi = $state<jadin.Midi | null>(null);
-	let isFullscreen = $state(false);
 	let playerContainer: HTMLDivElement;
+
+	// Create reactive state object for context - single $state with all properties
+	const playerState = $state({
+		time: thumbnail ? 2 : -1,
+		duration: 0,
+		isPlaying: false,
+		isFullscreen: false,
+		loadedMidi: null as jadin.Midi | null,
+		scrollRatio: 0,
+		togglePlayPause: () => toggleIsPlaying(),
+		toggleFullscreen: () => toggleFullscreen(),
+		onScroll: (ratio: number) => onScroll(ratio)
+	});
 
 	let initialPositionSecond = 0;
 	let initialDateNow = 0;
-	const audioCursor = $derived(loadedMidi?.newCursor());
+	const audioCursor = $derived(playerState.loadedMidi?.newCursor());
 	let requestedAnimationFrame = 0;
 	let timeoutId: number | NodeJS.Timeout = 0;
 
@@ -43,7 +52,7 @@
 				const { midiBase64 } = await response.json();
 				const binaryString = atob(midiBase64);
 				const midiFile = new jadin.Midi(binaryString);
-				loadedMidi = midiFile;
+				playerState.loadedMidi = midiFile;
 				if (!thumbnail) {
 					loadAudioBuffers(midiFile);
 				}
@@ -60,11 +69,13 @@
 	const lowMidiNumber = new MidiNumber(lowNumber);
 	const highMidiNumber = new MidiNumber(highNumber);
 
-	const windowHeightInSeconds = $derived(loadedMidi ? loadedMidi.duration + 2 : 1);
+	const windowHeightInSeconds = $derived(
+		playerState.loadedMidi ? playerState.loadedMidi.duration + 2 : 1
+	);
 
 	const durationInPixels = $derived(
-		loadedMidi
-			? loadedMidi.duration *
+		playerState.loadedMidi
+			? playerState.loadedMidi.duration *
 					10 /* timeScale */ *
 					(width / height) *
 					(highMidiNumber.x - lowMidiNumber.x + keyboard.IVORY_WIDTH)
@@ -72,30 +83,30 @@
 	);
 
 	function onScroll(ratio: number) {
-		scrollRatio = ratio;
-		time = ratio * windowHeightInSeconds - 1;
+		playerState.scrollRatio = ratio;
+		playerState.time = ratio * windowHeightInSeconds - 1;
 	}
 
 	function toggleIsPlaying() {
-		if (isPlaying) {
-			isPlaying = false;
+		if (playerState.isPlaying) {
+			playerState.isPlaying = false;
 			Synthesizer.getInstance().stopAudio();
 		} else {
-			initialPositionSecond = time;
+			initialPositionSecond = playerState.time;
 			initialDateNow = Date.now();
-			audioCursor?.backward(time);
-			audioCursor?.forward(time);
+			audioCursor?.backward(playerState.time);
+			audioCursor?.forward(playerState.time);
 
-			isPlaying = true;
+			playerState.isPlaying = true;
 			sonate();
 			animate();
 		}
 	}
 
 	function animate() {
-		if (isPlaying) {
+		if (playerState.isPlaying) {
 			const elapsedSeconds = (Date.now() - initialDateNow) / 1000;
-			time = initialPositionSecond + elapsedSeconds;
+			playerState.time = initialPositionSecond + elapsedSeconds;
 			requestedAnimationFrame = requestAnimationFrame(() => animate());
 		}
 	}
@@ -103,7 +114,7 @@
 	function sonate() {
 		const audioBufferDuration = 1.1; // MUST be > 1.0 because browsers cap setTimeout at 1000ms for inactive tabs
 
-		if (isPlaying && audioCursor) {
+		if (playerState.isPlaying && audioCursor) {
 			const elapsedSeconds = (Date.now() - initialDateNow) / 1000;
 			const currentPosition = initialPositionSecond + elapsedSeconds;
 
@@ -135,7 +146,7 @@
 			playerContainer
 				?.requestFullscreen()
 				.then(() => {
-					isFullscreen = true;
+					playerState.isFullscreen = true;
 				})
 				.catch((err) => {
 					console.error('Error attempting to enable fullscreen:', err);
@@ -144,7 +155,7 @@
 			document
 				.exitFullscreen()
 				.then(() => {
-					isFullscreen = false;
+					playerState.isFullscreen = false;
 				})
 				.catch((err) => {
 					console.error('Error attempting to exit fullscreen:', err);
@@ -166,7 +177,7 @@
 	// Listen for fullscreen changes (e.g., when user presses ESC)
 	$effect(() => {
 		const handleFullscreenChange = () => {
-			isFullscreen = !!document.fullscreenElement;
+			playerState.isFullscreen = !!document.fullscreenElement;
 		};
 
 		document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -174,6 +185,16 @@
 			document.removeEventListener('fullscreenchange', handleFullscreenChange);
 		};
 	});
+
+	// Update duration when loadedMidi changes
+	$effect(() => {
+		if (playerState.loadedMidi) {
+			playerState.duration = playerState.loadedMidi.duration;
+		}
+	});
+
+	// Set the player context
+	setContext(PLAYER_CONTEXT_KEY, playerState);
 </script>
 
 <div
@@ -181,14 +202,7 @@
 	bind:this={playerContainer}
 >
 	{#if !thumbnail}
-		<PlayerControls
-			{time}
-			duration={loadedMidi?.duration || 0}
-			{isPlaying}
-			{isFullscreen}
-			onPlayPause={toggleIsPlaying}
-			onFullscreen={toggleFullscreen}
-		/>
+		<PlayerControls />
 	{/if}
 
 	<div
@@ -205,14 +219,16 @@
 				<ScrollOverlay
 					{onScroll}
 					height={durationInPixels}
-					scrollRatio={isPlaying ? (time + 1) / windowHeightInSeconds : scrollRatio}
+					scrollRatio={playerState.isPlaying
+						? (playerState.time + 1) / windowHeightInSeconds
+						: playerState.scrollRatio}
 				/>
 			{/if}
 			<PianoRollBackground />
-			<CanvasPianoRoll midi={midiFile} {time} indexParity={true} />
-			<CanvasPianoRoll midi={midiFile} {time} indexParity={false} />
+			<CanvasPianoRoll indexParity={true} />
+			<CanvasPianoRoll indexParity={false} />
 			{#if !thumbnail}
-				<SvgKeyboard midi={midiFile} {time} />
+				<SvgKeyboard />
 			{/if}
 		{:catch error}
 			<div class="flex h-full items-center justify-center">

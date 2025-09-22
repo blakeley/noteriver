@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type * as jadin from 'jadin';
+	import { getContext } from 'svelte';
+	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import SvgDefs from './SvgDefs.svelte';
 	import IvoryKey from './IvoryKey.svelte';
 	import EbonyKey from './EbonyKey.svelte';
 
-	let { time, midi }: { time: number; midi: jadin.Midi } = $props();
+	const playerState = getContext(PLAYER_CONTEXT_KEY);
 
 	const lowNumber = 21;
 	const highNumber = 108;
@@ -16,10 +17,10 @@
 
 	// Derive key states directly from notesOnAt
 	const keyStates = $derived(
-		midi.tracks
+		playerState.loadedMidi?.tracks
 			.flatMap((track) =>
 				track
-					.notesOnAt(time)
+					.notesOnAt(playerState.time)
 					.filter((note) => note.number !== undefined)
 					.map((note) => ({ noteNumber: note.number!, trackIndex: track.index }))
 			)
@@ -29,7 +30,7 @@
 					[noteNumber]: trackIndex
 				}),
 				{}
-			)
+			) || {}
 	);
 </script>
 

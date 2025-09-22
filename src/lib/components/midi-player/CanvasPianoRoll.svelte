@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, getContext } from 'svelte';
 	import type * as jadin from 'jadin';
+	import { PLAYER_CONTEXT_KEY } from '$lib/midi-player/context';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import { createHorizontalGradient } from '$lib/utils/colorGradient';
 
@@ -98,14 +99,12 @@
 		return boundaries;
 	}
 
+	const playerState = getContext(PLAYER_CONTEXT_KEY);
+
 	let {
-		indexParity,
-		time,
-		midi
+		indexParity
 	}: {
 		indexParity: boolean;
-		time: number;
-		midi: jadin.Midi;
 	} = $props();
 
 	let canvasRef: HTMLCanvasElement;
@@ -125,7 +124,7 @@
 	const duration = $derived(height / (scale * timeScale));
 
 	const currentIndex = $derived(() => {
-		let idx = Math.floor(time / duration);
+		let idx = Math.floor(playerState.time / duration);
 		if (indexParity === (idx % 2 === 0)) {
 			idx += 1;
 		}
@@ -134,10 +133,10 @@
 
 	const start = $derived(currentIndex() * duration);
 
-	const translateY = $derived(-(100 * (start - time)) / duration);
+	const translateY = $derived(-(100 * (start - playerState.time)) / duration);
 
 	function draw() {
-		if (!canvasRef || !midi) return;
+		if (!canvasRef || !playerState.loadedMidi) return;
 		const ctx = canvasRef.getContext('2d')!;
 		ctx.resetTransform();
 		ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
@@ -149,7 +148,11 @@
 		ctx.translate(0, -start * timeScale);
 
 		// Draw horizontal measure lines
-		const measureBoundaries = getMeasureBoundaries(midi, start, start + duration);
+		const measureBoundaries = getMeasureBoundaries(
+			playerState.loadedMidi!,
+			start,
+			start + duration
+		);
 		ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
 		ctx.lineWidth = 1 / scale;
 
@@ -179,7 +182,7 @@
 			}
 		}
 
-		for (const track of midi.tracks) {
+		for (const track of playerState.loadedMidi!.tracks) {
 			for (const note of track.notesOnDuring(start - 1, start + duration)) {
 				const midiNumber = new MidiNumber(note.number!);
 
@@ -225,7 +228,7 @@
 	});
 
 	$effect(() => {
-		let idx = Math.floor(time / duration);
+		let idx = Math.floor(playerState.time / duration);
 		if (indexParity === (idx % 2 === 0)) {
 			idx += 1;
 		}
