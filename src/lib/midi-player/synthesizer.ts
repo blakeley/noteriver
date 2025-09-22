@@ -13,9 +13,11 @@ export class Synthesizer {
 	private masterGain: GainNode;
 
 	constructor() {
-		this.audioContext = new AudioContext();
-		this.masterGain = this.audioContext.createGain();
-		this.masterGain.connect(this.audioContext.destination);
+		if (typeof window !== 'undefined' && window.AudioContext) {
+			this.audioContext = new AudioContext();
+			this.masterGain = this.audioContext.createGain();
+			this.masterGain.connect(this.audioContext.destination);
+		}
 	}
 
 	public static getInstance(): Synthesizer {
@@ -48,6 +50,7 @@ export class Synthesizer {
 	}
 
 	async fetchAndDecodeAudioFile(url: string) {
+		if (!this.audioContext) return null as any;
 		const response = await fetch(url);
 		const arrayBuffer = await response.arrayBuffer();
 		const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
@@ -59,6 +62,7 @@ export class Synthesizer {
 		startWhen: number = 0,
 		{ gainValue = 1.0, startBufferOffset = 0, sustainDuration = 0.125, fadeDuration = 1.25 } = {}
 	) {
+		if (!this.audioContext) return;
 		const key = this.noteToUrl(note);
 		if (note.track.patch === null || note.track.patch === 0) {
 			console.log('piano');
