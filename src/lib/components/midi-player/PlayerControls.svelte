@@ -3,6 +3,9 @@
 
 	const playerState = getPlayerContext();
 
+	let isDragging = $state(false);
+	let progressBarEl: HTMLElement;
+
 	function formatTime(seconds: number): string {
 		if (!isFinite(seconds) || seconds < 0) return '0:00';
 		const mins = Math.floor(seconds / 60);
@@ -12,19 +15,43 @@
 
 	const currentTime = $derived(formatTime(Math.max(0, playerState.time)));
 	const totalTime = $derived(formatTime(playerState.duration));
+
+	// Progress bar shows range from -1 to duration + 1
+	const totalRange = $derived(playerState.duration + 2); // +1 on each side
 	const progressPercent = $derived(
-		playerState.duration > 0 ? (playerState.time / playerState.duration) * 100 : 0
+		Math.min(100, playerState.duration > 0 ? ((playerState.time + 1) / totalRange) * 100 : 0)
 	);
 
-	function handleProgressClick(event: MouseEvent) {
-		if (playerState.duration <= 0) return;
+	function updateTimeFromPosition(clientX: number) {
+		if (playerState.duration <= 0 || !progressBarEl) return;
 
-		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-		const clickX = event.clientX - rect.left;
+		const rect = progressBarEl.getBoundingClientRect();
+		const clickX = clientX - rect.left;
 		const clickPercent = clickX / rect.width;
-		playerState.time = clickPercent * playerState.duration;
+		// Map from 0-1 range to -1 to duration+1 range
+		playerState.time = clickPercent * totalRange - 1;
+	}
+
+	function handleMouseDown(event: MouseEvent) {
+		isDragging = true;
+		updateTimeFromPosition(event.clientX);
+
+		// Prevent text selection while dragging
+		event.preventDefault();
+	}
+
+	function handleMouseMove(event: MouseEvent) {
+		if (!isDragging) return;
+		updateTimeFromPosition(event.clientX);
+	}
+
+	function handleMouseUp() {
+		if (!isDragging) return;
+		isDragging = false;
 	}
 </script>
+
+<svelte:document onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 
 <div
 	class="absolute right-0 bottom-0 left-0 z-20 h-2/5 px-3"
@@ -34,8 +61,11 @@
 		class="absolute right-0 bottom-0 left-0 flex h-12 items-center justify-between text-white/95"
 	>
 		<div
+			bind:this={progressBarEl}
+			tabindex="0"
 			class="absolute right-4 bottom-full left-4 h-1 cursor-pointer rounded-full bg-white/75 transition-all hover:h-1.5"
-			onclick={handleProgressClick}
+			class:cursor-grabbing={isDragging}
+			onmousedown={handleMouseDown}
 			role="slider"
 			aria-label="Seek"
 			aria-valuenow={Math.round(progressPercent)}
@@ -49,7 +79,8 @@
 			>
 				<!-- Progress Circle Indicator -->
 				<div
-					class="absolute top-1/2 -right-1.5 h-4 w-4 -translate-y-1/2 cursor-pointer rounded-full bg-primary-500 shadow-md"
+					class="absolute top-1/2 -right-1.5 h-4 w-4 -translate-y-1/2 cursor-pointer rounded-full bg-primary-500 shadow-md transition-transform"
+					class:scale-125={isDragging}
 				></div>
 			</div>
 		</div>
