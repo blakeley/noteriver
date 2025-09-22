@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import type * as jadin from 'jadin';
 	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
+	import { createHorizontalGradient } from '$lib/utils/colorGradient';
 
 	interface TimeSignatureChange {
 		second: number;
@@ -181,8 +182,11 @@
 		for (const track of midi.tracks) {
 			for (const note of track.notesOnDuring(start - 1, start + duration)) {
 				const midiNumber = new MidiNumber(note.number!);
-				ctx.fillStyle =
+
+				// Get base color
+				const baseColor =
 					midiNumber.noteColors[track.index % midiNumber.noteColors.length] || '#95B7DB';
+
 				ctx.strokeStyle = '#202020';
 				ctx.lineWidth = midiNumber.width / 16;
 
@@ -191,6 +195,10 @@
 				const w = midiNumber.width - ctx.lineWidth;
 				const h = note.duration * timeScale;
 				const r = midiNumber.width / 4;
+
+				// Use culori-based gradient for perceptually uniform color manipulation
+				const gradient = createHorizontalGradient(ctx, x, w, baseColor);
+				ctx.fillStyle = gradient;
 
 				ctx.beginPath();
 				ctx.moveTo(x + r, y);

@@ -1,5 +1,6 @@
 import type * as jadin from 'jadin';
 import { keyboard, MidiNumber } from './keyboard';
+import { createHorizontalGradient } from '$lib/utils/colorGradient';
 
 interface DrawOptions {
 	ctx: CanvasRenderingContext2D;
@@ -95,7 +96,7 @@ function getMeasureBoundaries(midi: jadin.Midi, startTime: number, endTime: numb
 		const currentTempo = tempoChanges[currentTempoIndex];
 
 		// Calculate measure duration in seconds
-		const measureDuration = (currentTs.beatsPerMeasure / currentTempo.bpm) * 60;
+		const measureDuration = (currentTs!.beatsPerMeasure / currentTempo!.bpm) * 60;
 
 		// Add boundary if within range
 		if (currentTime >= startTime && currentTime <= endTime) {
@@ -177,9 +178,10 @@ export function drawPianoRoll({
 		for (const note of track.notesOnDuring(startTime - 1, endTime + 1)) {
 			const midiNumber = new MidiNumber(note.number!);
 
-			// Set colors
-			ctx.fillStyle =
+			// Get base color
+			const baseColor =
 				midiNumber.noteColors[track.index % midiNumber.noteColors.length] || '#95B7DB';
+
 			ctx.strokeStyle = '#202020';
 			ctx.lineWidth = midiNumber.width / 16;
 
@@ -189,6 +191,10 @@ export function drawPianoRoll({
 			const w = midiNumber.width - ctx.lineWidth;
 			const h = note.duration * timeScale;
 			const r = midiNumber.width / 4;
+
+			// Use culori-based gradient for perceptually uniform color manipulation
+			const gradient = createHorizontalGradient(ctx, x, w, baseColor);
+			ctx.fillStyle = gradient;
 
 			// Draw rounded rectangle for the note
 			ctx.beginPath();
