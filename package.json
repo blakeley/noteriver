@@ -64,7 +64,6 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.893.0",
 		"@neondatabase/serverless": "^0.10.4",
-		"@node-rs/argon2": "^2.0.2",
-		"jadin": "github:blakeley/jadin#v0.14.0"
+		"@node-rs/argon2": "^2.0.2"
 	}
 }

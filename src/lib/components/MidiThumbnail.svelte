@@ -27,7 +27,8 @@
 			// Fetch MIDI from S3 via API
 			const response = await fetch(`/api/midis/s3/${encodeURIComponent(s3key)}`);
 			if (!response.ok) {
-				throw new Error('Failed to fetch MIDI');
+				console.warn(`Failed to load thumbnail for ${s3key}: ${response.status}`);
+				return; // Silently fail, keeping the gray background
 			}
 			const { midiBase64 } = await response.json();
 
@@ -54,8 +55,9 @@
 						midi,
 						startTime,
 						endTime,
-						width: width * dpr,
-						height: height * dpr
+						width: width, // Use CSS dimensions, not scaled
+						height: height,
+						showGridLines: false // Don't show grid lines in thumbnails
 					});
 				}
 			}

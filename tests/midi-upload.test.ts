@@ -11,7 +11,7 @@ describe('MIDI Upload Flow', () => {
 	const BASE_URL = 'http://localhost:5174';
 
 	// Load test MIDI file
-	const testMidiPath = join(__dirname, 'fixtures', 'c.mid');
+	const testMidiPath = join(__dirname, '../src/lib/jadin/fixtures', 'c.mid');
 	const testMidiBuffer = readFileSync(testMidiPath);
 
 	test('should upload a MIDI file successfully', async () => {
