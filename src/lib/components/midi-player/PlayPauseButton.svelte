@@ -5,7 +5,7 @@
 </script>
 
 <button
-	class="flex aspect-square h-full cursor-pointer items-center justify-center"
+	class="flex aspect-square h-full cursor-pointer items-center justify-center transition-transform hover:scale-110"
 	onclick={playerState.togglePlayPause}
 	aria-label={playerState.isPlaying ? 'Pause' : 'Play'}
 >

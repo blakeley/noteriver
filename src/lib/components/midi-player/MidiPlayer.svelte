@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
-	import * as jadin from 'jadin';
-	import { Synthesizer } from '$lib/midi-player/synthesizer';
-	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import { setPlayerContext } from '$lib/midi-player/context';
+	import { MidiNumber } from '$lib/midi-player/keyboard';
+	import { Synthesizer } from '$lib/midi-player/synthesizer';
+	import * as jadin from 'jadin';
+	import { onDestroy } from 'svelte';
 	import CanvasPianoRoll from './CanvasPianoRoll.svelte';
 	import PianoRollBackground from './PianoRollBackground.svelte';
 	import PlayerControls from './PlayerControls.svelte';
 	import PlayPauseFlash from './PlayPauseFlash.svelte';
 	import ScrollOverlay from './ScrollOverlay.svelte';
 	import SvgKeyboard from './SvgKeyboard.svelte';
+	import ThreltePianoRoll from './ThreltePianoRoll.svelte';
 
 	let {
 		s3key,
@@ -36,7 +37,8 @@
 		lowMidiNumber: new MidiNumber(21),
 		highMidiNumber: new MidiNumber(108),
 		timeScale: 10, // Number of ivory key widths in one second of piano roll
-		togglePlayPause: () => togglePlayPause()
+		togglePlayPause: () => togglePlayPause(),
+		visualMode: 'threlte' as const
 	});
 
 	let initialPositionSecond = 0;
@@ -172,6 +174,11 @@
 				togglePlayPause();
 			}
 		}
+		// Reset time to 0 on '0' key
+		if (event.key === '0') {
+			event.preventDefault();
+			playerState.time = 0;
+		}
 	}
 
 	// Update duration when loadedMidi changes
@@ -192,6 +199,7 @@
 	bind:clientHeight={playerState.height}
 	onkeydown={handleKeydown}
 	tabindex="0"
+	role="button"
 >
 	<div
 		class="relative h-full w-full flex-1 overflow-hidden bg-[#2c2c2c] bg-[radial-gradient(circle_at_center_bottom,#2c2c2c_70%,#202020)]"
@@ -208,8 +216,12 @@
 				<PlayPauseFlash />
 			{/if}
 			<PianoRollBackground />
-			<CanvasPianoRoll indexParity={true} />
-			<CanvasPianoRoll indexParity={false} />
+			{#if playerState.visualMode === 'canvas'}
+				<CanvasPianoRoll indexParity={true} />
+				<CanvasPianoRoll indexParity={false} />
+			{:else}
+				<ThreltePianoRoll />
+			{/if}
 			{#if !thumbnail}
 				<SvgKeyboard />
 				<PlayerControls />

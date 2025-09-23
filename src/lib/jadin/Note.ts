@@ -6,7 +6,7 @@ export default class Note {
 	constructor(
 		private readonly onEvent: Event<NoteOnEvent>,
 		private readonly offEvent: Event<NoteOffEvent>,
-		private readonly track: Track
+		readonly track: Track
 	) {}
 
 	get onTick() {

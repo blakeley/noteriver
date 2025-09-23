@@ -37,6 +37,7 @@
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/node": "^22",
+		"@types/three": "^0.180.0",
 		"@vitest/browser": "^3.2.3",
 		"dotenv": "^17.2.2",
 		"drizzle-kit": "^0.31.4",
@@ -65,6 +66,9 @@
 		"@aws-sdk/client-s3": "^3.893.0",
 		"@neondatabase/serverless": "^0.10.4",
 		"@node-rs/argon2": "^2.0.2",
-		"culori": "^4.0.2"
+		"@threlte/core": "^8.1.5",
+		"@threlte/extras": "^9.5.4",
+		"culori": "^4.0.2",
+		"three": "^0.180.0"
 	}
 }
