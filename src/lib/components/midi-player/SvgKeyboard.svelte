@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { getPlayerContext } from '$lib/midi-player/context';
-	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
-	import SvgDefs from './SvgDefs.svelte';
-	import IvoryKey from './IvoryKey.svelte';
+	import { keyboard } from '$lib/midi-player/keyboard';
 	import EbonyKey from './EbonyKey.svelte';
+	import IvoryKey from './IvoryKey.svelte';
+	import SvgDefs from './SvgDefs.svelte';
 
 	const playerState = getPlayerContext();
 

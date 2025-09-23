@@ -38,7 +38,7 @@
 		highMidiNumber: new MidiNumber(108),
 		timeScale: 10, // Number of ivory key widths in one second of piano roll
 		togglePlayPause: () => togglePlayPause(),
-		visualMode: 'threlte' as const
+		visualMode: 'threlte' as 'threlte' | 'canvas'
 	});
 
 	let initialPositionSecond = 0;

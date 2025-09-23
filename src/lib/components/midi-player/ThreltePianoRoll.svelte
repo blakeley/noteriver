@@ -19,38 +19,20 @@
 		playerState.height / 2,
 		100
 	]);
-	const cameraLeft = $derived(0);
-	const cameraRight = $derived(playerState.width);
-	const cameraTop = $derived(0);
-	const cameraBottom = $derived(playerState.height);
-
-	// Scene transformation to match canvas coordinate system
-	const scenePosition = $derived([0, playerState.height, 0] as const);
-	const sceneScale = $derived([scale, -scale, 1] as const);
-
-	// Offset for piano roll - scrolls with time (notes move down)
-	const pianoRollOffset = $derived([
-		-playerState.lowMidiNumber.x,
-		playerState.time * playerState.timeScale,
-		0
-	] as const);
 </script>
 
 <div class="absolute h-full w-full">
 	<Canvas toneMapping={0}>
-		<T.OrthographicCamera
-			position={cameraPosition}
-			left={cameraLeft}
-			right={cameraRight}
-			top={cameraTop}
-			bottom={cameraBottom}
-			near={0}
-			far={100}
-			makeDefault
-		/>
+		<T.OrthographicCamera position={cameraPosition} near={0} far={100} makeDefault />
 
-		<T.Group position={scenePosition} scale={sceneScale}>
-			<T.Group position={pianoRollOffset}>
+		<T.Group scale={[scale, -scale, 1]}>
+			<T.Group
+				position={[
+					-playerState.lowMidiNumber.x,
+					playerState.time * playerState.timeScale - keyboard.IVORY_HEIGHT,
+					0
+				]}
+			>
 				{#if playerState.loadedMidi}
 					<T.Group scale={[1, playerState.timeScale, 1]}>
 						{#each playerState.loadedMidi.tracks as track}
