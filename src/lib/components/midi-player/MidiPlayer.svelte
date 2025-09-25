@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { setPlayerContext } from '$lib/midi-player/context';
+	import { PLAYER_INITIAL_TIME_OFFSET, THUMBNAIL_INITIAL_TIME } from '$lib/midi-player/constants';
 	import { MidiNumber } from '$lib/midi-player/keyboard';
 	import { Synthesizer } from '$lib/midi-player/synthesizer';
 	import * as jadin from 'jadin';
@@ -24,7 +25,7 @@
 
 	// Create reactive state object for context - single $state with all properties
 	const playerState = $state({
-		time: thumbnail ? 2 : -1,
+		time: thumbnail ? THUMBNAIL_INITIAL_TIME : PLAYER_INITIAL_TIME_OFFSET,
 		duration: 0,
 		isPlaying: false,
 		isFullscreen: false,

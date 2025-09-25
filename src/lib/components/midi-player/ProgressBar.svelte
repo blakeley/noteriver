@@ -1,15 +1,21 @@
 <script lang="ts">
 	import { getPlayerContext } from '$lib/midi-player/context';
+	import { PLAYER_INITIAL_TIME_OFFSET } from '$lib/midi-player/constants';
 
 	const playerState = getPlayerContext();
 
 	let isDragging = $state(false);
 	let progressBarEl: HTMLElement;
 
-	// Progress bar shows range from -1 to duration + 1
-	const totalRange = $derived(playerState.duration + 2); // +1 on each side
+	// Progress bar shows range from initial offset to duration + 1
+	const totalRange = $derived(playerState.duration - PLAYER_INITIAL_TIME_OFFSET + 1); // from initial offset to duration + 1
 	const progressPercent = $derived(
-		Math.min(100, playerState.duration > 0 ? ((playerState.time + 1) / totalRange) * 100 : 0)
+		Math.min(
+			100,
+			playerState.duration > 0
+				? ((playerState.time - PLAYER_INITIAL_TIME_OFFSET) / totalRange) * 100
+				: 0
+		)
 	);
 
 	function updateTimeFromPosition(clientX: number) {
@@ -18,8 +24,8 @@
 		const rect = progressBarEl.getBoundingClientRect();
 		const clickX = clientX - rect.left;
 		const clickPercent = clickX / rect.width;
-		// Map from 0-1 range to -1 to duration+1 range
-		playerState.time = clickPercent * totalRange - 1;
+		// Map from 0-1 range to initial offset to duration+1 range
+		playerState.time = clickPercent * totalRange + PLAYER_INITIAL_TIME_OFFSET;
 	}
 
 	function handleMouseDown(event: MouseEvent) {

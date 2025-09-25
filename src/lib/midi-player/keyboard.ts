@@ -50,6 +50,9 @@ export class Keyboard {
 	EBONY_WIDTH = 14 / 24;
 	IVORY_HEIGHT = 132 / 24; // IVORY_WIDTH * 5.5
 	EBONY_HEIGHT = 77 / 24; // EBONY_WIDTH * 5.5
+	IVORY_THICKNESS = 20 / 24;
+	EBONY_THICKNESS = 11.5 / 24;
+	EBONY_ELEVATION = 10 / 24;
 	OFFSETS = [0, 15, 24, 44, 48, 72, 85, 96, 113, 120, 141, 144].map((offset) => offset / 24);
 	MIDI_NUMBERS = [
 		21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,

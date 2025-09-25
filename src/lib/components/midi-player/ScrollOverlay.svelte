@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getPlayerContext } from '$lib/midi-player/context';
+	import { PLAYER_INITIAL_TIME_OFFSET } from '$lib/midi-player/constants';
 	import { keyboard } from '$lib/midi-player/keyboard';
 
 	const playerState = getPlayerContext();
@@ -25,13 +26,13 @@
 		const scrollTop = scrollDiv.scrollTop;
 		const elementHeight = scrollDiv.clientHeight;
 		const ratio = scrollTop / (durationInPixels - elementHeight);
-		playerState.time = ratio * windowHeightInSeconds - 1;
+		playerState.time = ratio * windowHeightInSeconds + PLAYER_INITIAL_TIME_OFFSET;
 	}
 
 	// Update scroll position when time changes
 	$effect(() => {
 		if (!scrollDiv) return;
-		const scrollRatio = (playerState.time + 1) / windowHeightInSeconds;
+		const scrollRatio = (playerState.time - PLAYER_INITIAL_TIME_OFFSET) / windowHeightInSeconds;
 		scrollDiv.scrollTop = scrollRatio * (durationInPixels - scrollDiv.clientHeight);
 	});
 </script>
