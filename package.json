@@ -70,6 +70,7 @@
 		"@threlte/extras": "^9.5.4",
 		"culori": "^4.0.2",
 		"svelte-three": "^0.1.2",
-		"three": "^0.180.0"
+		"three": "^0.180.0",
+		"three-bvh-csg": "^0.0.17"
 	}
 }

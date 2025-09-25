@@ -11,6 +11,10 @@
 		{
 			title: '3D Piano',
 			path: '/demo/piano'
+		},
+		{
+			title: 'CSG Demo',
+			path: '/demo/csg'
 		}
 	];
 </script>
