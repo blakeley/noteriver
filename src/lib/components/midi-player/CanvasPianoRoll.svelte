@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getPlayerContext } from '$lib/midi-player/context';
-	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
+	import { Keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import { createHorizontalGradient } from '$lib/utils/colorGradient';
 
 	const playerState = getPlayerContext();
@@ -45,7 +45,7 @@
 		ctx.translate(0, canvasRef.height);
 		ctx.scale(scale, -scale);
 		ctx.translate(-playerState.lowMidiNumber.x, 0);
-		ctx.translate(0, keyboard.IVORY_HEIGHT);
+		ctx.translate(0, Keyboard.IVORY_HEIGHT);
 		ctx.translate(0, -start * playerState.timeScale);
 
 		// Draw horizontal measure lines
@@ -73,7 +73,7 @@
 				const lineX = midiNum.x + midiNum.width;
 
 				ctx.beginPath();
-				ctx.moveTo(lineX, start * playerState.timeScale - keyboard.IVORY_HEIGHT);
+				ctx.moveTo(lineX, start * playerState.timeScale - Keyboard.IVORY_HEIGHT);
 				ctx.lineTo(lineX, (start + duration) * playerState.timeScale);
 				ctx.stroke();
 			}

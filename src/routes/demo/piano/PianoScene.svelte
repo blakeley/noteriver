@@ -1,8 +1,15 @@
 <script lang="ts">
 	import { T, useThrelte } from '@threlte/core';
-	import { keyboard } from '$lib/midi-player/keyboard';
-	import { OrbitControls, Portal, RoundedBoxGeometry } from '@threlte/extras';
+	import { Keyboard } from '$lib/midi-player/keyboard';
+	import {
+		OrbitControls,
+		Portal,
+		RoundedBoxGeometry,
+		InstancedMesh,
+		Instance
+	} from '@threlte/extras';
 	import * as THREE from 'three';
+	import { ebonyKeyGeometry } from '$lib/midi-player/ebonyKeyGeometry';
 
 	// Props for light control
 	let { lightX = 0, lightY = -100, lightZ = 200, lightIntensity = 1 } = $props();
@@ -13,10 +20,42 @@
 	// Set scene background color
 	scene.background = new THREE.Color('#2c2c2c');
 
+	// Create anisotropy map for brushed metal effect
+	const createAnisotropyMap = () => {
+		const width = 256;
+		const height = 256;
+		const size = width * height;
+		const data = new Uint8Array(3 * size);
+
+		// Create vertical brushed pattern
+		for (let i = 0; i < size; i++) {
+			const x = i % width;
+			const y = Math.floor(i / width);
+
+			// Create vertical streaks with noise
+			const streak = Math.sin(x * 0.5) * 0.3 + 0.7;
+			const noise = (Math.random() - 0.5) * 0.1;
+			const value = Math.min(255, Math.max(0, (streak + noise) * 255));
+
+			data[i * 3] = value; // R
+			data[i * 3 + 1] = value; // G
+			data[i * 3 + 2] = value; // B
+		}
+
+		const texture = new THREE.DataTexture(data, width, height);
+		texture.needsUpdate = true;
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+		texture.repeat.set(1, 4); // Stretch pattern vertically
+		return texture;
+	};
+
+	const anisotropyMap = createAnisotropyMap();
+
 	// Calculate actual keyboard dimensions
-	const firstKey = keyboard.MIDI_NUMBERS[0];
+	const firstKey = Keyboard.MIDI_NUMBERS[0];
 	if (!firstKey) throw new Error('No first key');
-	const lastKey = keyboard.MIDI_NUMBERS[keyboard.MIDI_NUMBERS.length - 1];
+	const lastKey = Keyboard.MIDI_NUMBERS[Keyboard.MIDI_NUMBERS.length - 1];
 	if (!lastKey) throw new Error('No last key');
 	const actualKeyboardWidth = lastKey.x - firstKey.x + lastKey.width;
 
@@ -64,10 +103,10 @@
 <!-- Piano Keyboard Group -->
 <T.Group {scale} position={[-firstKey.x * scale, viewportHeight / 2, 0]}>
 	<!-- Ivory Keys -->
-	{#each keyboard.IVORY_MIDI_NUMBERS as midiNumber}
+	{#each Keyboard.IVORY_MIDI_NUMBERS as midiNumber}
 		<T.Mesh position={[midiNumber.x + midiNumber.width / 2, 0, 0]}>
 			<RoundedBoxGeometry
-				args={[midiNumber.width * 0.95, keyboard.IVORY_HEIGHT, keyboard.IVORY_THICKNESS]}
+				args={[midiNumber.width * 0.95, Keyboard.IVORY_HEIGHT, Keyboard.IVORY_THICKNESS]}
 				radius={midiNumber.width * 0.95 * 0.1}
 				creaseAngle={100}
 			/>
@@ -75,21 +114,27 @@
 		</T.Mesh>
 	{/each}
 
-	<!-- Ebony Keys -->
-	{#each keyboard.EBONY_MIDI_NUMBERS as midiNumber}
-		<T.Mesh
-			position={[
-				midiNumber.x + midiNumber.width / 2,
-				(keyboard.IVORY_HEIGHT - keyboard.EBONY_HEIGHT) / 2,
-				keyboard.EBONY_ELEVATION
-			]}
-		>
-			<RoundedBoxGeometry
-				args={[midiNumber.width, keyboard.EBONY_HEIGHT, keyboard.EBONY_THICKNESS]}
-				radius={midiNumber.width / 4}
-				creaseAngle={100}
+	<!-- Ebony Keys InstancedMesh -->
+	<InstancedMesh geometry={ebonyKeyGeometry}>
+		<T.MeshPhysicalMaterial
+			color={Keyboard.EBONY_KEY_COLOR}
+			roughness={0.5}
+			metalness={0.5}
+			clearcoat={0}
+			clearcoatRoughness={0.1}
+			side={THREE.DoubleSide}
+		/>
+
+		{#each Keyboard.EBONY_MIDI_NUMBERS as midiNumber}
+			<Instance
+				position={[
+					midiNumber.x + midiNumber.width / 2,
+					(Keyboard.IVORY_HEIGHT - Keyboard.EBONY_HEIGHT) / 2,
+					Keyboard.EBONY_ELEVATION
+				]}
+				rotation={[0, 0, 0]}
+				scale={[midiNumber.width, Keyboard.EBONY_HEIGHT / 7.5, Keyboard.EBONY_THICKNESS]}
 			/>
-			<T.MeshStandardMaterial color="#0D0D12" roughness={0.5} metalness={0.5} />
-		</T.Mesh>
-	{/each}
+		{/each}
+	</InstancedMesh>
 </T.Group>

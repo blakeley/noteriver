@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getPlayerContext } from '$lib/midi-player/context';
-	import { keyboard } from '$lib/midi-player/keyboard';
+	import { Keyboard } from '$lib/midi-player/keyboard';
 	import EbonyKey from './EbonyKey.svelte';
 	import IvoryKey from './IvoryKey.svelte';
 	import SvgDefs from './SvgDefs.svelte';
@@ -8,7 +8,7 @@
 	const playerState = getPlayerContext();
 
 	const vbx = $derived(playerState.lowMidiNumber.x);
-	const vbw = $derived(playerState.highMidiNumber.x - vbx + keyboard.IVORY_WIDTH);
+	const vbw = $derived(playerState.highMidiNumber.x - vbx + Keyboard.IVORY_WIDTH);
 	const viewBox = $derived(`${vbx} 0 ${vbw} 1000`);
 
 	// Derive key states directly from notesOnAt
@@ -34,14 +34,14 @@
 	<svg class="h-full w-full scale-y-[-1]" {viewBox} preserveAspectRatio="xMidYMin slice">
 		<SvgDefs />
 
-		{#each keyboard.IVORY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
+		{#each Keyboard.IVORY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
 			<IvoryKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
 		{/each}
 
 		<!-- Burgundy bar at the top of the keys -->
-		<rect x={vbx} y={keyboard.IVORY_HEIGHT - 0.12} width={vbw} height="0.12" fill="#800020" />
+		<rect x={vbx} y={Keyboard.IVORY_HEIGHT - 0.12} width={vbw} height="0.12" fill="#800020" />
 
-		{#each keyboard.EBONY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
+		{#each Keyboard.EBONY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
 			<EbonyKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
 		{/each}
 

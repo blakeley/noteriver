@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { keyboard } from '$lib/midi-player/keyboard';
+	import { Keyboard } from '$lib/midi-player/keyboard';
 
 	let { x, pressed }: { x: number; pressed: number | undefined } = $props();
 
 	const fill = $derived(() => {
 		if (pressed !== undefined) {
-			return keyboard.EBONY_KEY_COLORS[pressed % keyboard.EBONY_KEY_COLORS.length];
+			return Keyboard.EBONY_KEY_COLORS[pressed % Keyboard.EBONY_KEY_COLORS.length];
 		} else {
 			return '#202020';
 		}
@@ -16,9 +16,9 @@
 	viewBox="0 0 1 1000"
 	preserveAspectRatio="xMinYMin slice"
 	{x}
-	y={keyboard.IVORY_HEIGHT - keyboard.EBONY_HEIGHT}
-	width={keyboard.EBONY_WIDTH}
-	height={keyboard.EBONY_HEIGHT}
+	y={Keyboard.IVORY_HEIGHT - Keyboard.EBONY_HEIGHT}
+	width={Keyboard.EBONY_WIDTH}
+	height={Keyboard.EBONY_HEIGHT}
 >
 	<!-- background -->
 	<rect x="0" width="1" y=".020" height="5.5625" fill={fill()} />

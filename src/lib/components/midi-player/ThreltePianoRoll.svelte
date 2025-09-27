@@ -2,7 +2,7 @@
 	import { Canvas } from '@threlte/core';
 	import { T } from '@threlte/core';
 	import { getPlayerContext } from '$lib/midi-player/context';
-	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
+	import { Keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import ThreltePianoNote from './ThreltePianoNote.svelte';
 
 	const playerState = getPlayerContext();
@@ -29,7 +29,7 @@
 			<T.Group
 				position={[
 					-playerState.lowMidiNumber.x,
-					playerState.time * playerState.timeScale - keyboard.IVORY_HEIGHT,
+					playerState.time * playerState.timeScale - Keyboard.IVORY_HEIGHT,
 					0
 				]}
 			>

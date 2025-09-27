@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getPlayerContext } from '$lib/midi-player/context';
 	import { PLAYER_INITIAL_TIME_OFFSET } from '$lib/midi-player/constants';
-	import { keyboard } from '$lib/midi-player/keyboard';
+	import { Keyboard } from '$lib/midi-player/keyboard';
 
 	const playerState = getPlayerContext();
 	let scrollDiv: HTMLDivElement;
@@ -17,7 +17,7 @@
 			? playerState.loadedMidi.duration *
 					playerState.timeScale *
 					(playerState.width / playerState.height) *
-					(playerState.highMidiNumber.x - playerState.lowMidiNumber.x + keyboard.IVORY_WIDTH)
+					(playerState.highMidiNumber.x - playerState.lowMidiNumber.x + Keyboard.IVORY_WIDTH)
 			: 0
 	);
 

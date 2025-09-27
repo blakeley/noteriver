@@ -1,5 +1,5 @@
 import type * as jadin from 'jadin';
-import { keyboard, MidiNumber } from './keyboard';
+import { Keyboard, MidiNumber } from './keyboard';
 import { createHorizontalGradient } from '$lib/utils/colorGradient';
 
 interface DrawOptions {
@@ -136,7 +136,7 @@ export function drawPianoRoll({
 	ctx.translate(0, height);
 	ctx.scale(scale, -scale);
 	ctx.translate(-lowMidiNumber.x, 0);
-	ctx.translate(0, keyboard.IVORY_HEIGHT);
+	ctx.translate(0, Keyboard.IVORY_HEIGHT);
 	ctx.translate(0, -startTime * timeScale);
 
 	// Only draw grid lines if enabled
@@ -166,7 +166,7 @@ export function drawPianoRoll({
 				const lineX = midiNum.x + midiNum.width;
 
 				ctx.beginPath();
-				ctx.moveTo(lineX, startTime * timeScale - keyboard.IVORY_HEIGHT);
+				ctx.moveTo(lineX, startTime * timeScale - Keyboard.IVORY_HEIGHT);
 				ctx.lineTo(lineX, endTime * timeScale);
 				ctx.stroke();
 			}

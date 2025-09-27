@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { keyboard, MidiNumber } from '$lib/midi-player/keyboard';
+	import { Keyboard, MidiNumber } from '$lib/midi-player/keyboard';
 	import { getPlayerContext } from '$lib/midi-player/context';
 
 	const playerState = getPlayerContext();
@@ -27,8 +27,8 @@
 
 		// Draw C note lines
 		ctx.fillStyle = '#555555';
-		for (const cMidiNumber of keyboard.C_MIDI_NUMBERS) {
-			const lineWidth = keyboard.IVORY_WIDTH / 20;
+		for (const cMidiNumber of Keyboard.C_MIDI_NUMBERS) {
+			const lineWidth = Keyboard.IVORY_WIDTH / 20;
 			const x = cMidiNumber.x - lineWidth / 2;
 			const y = 0;
 			const lineHeight = canvasRef.height / scale;
@@ -37,8 +37,8 @@
 
 		// Draw F note lines
 		ctx.fillStyle = '#444444';
-		for (const fMidiNumber of keyboard.F_MIDI_NUMBERS) {
-			const lineWidth = keyboard.IVORY_WIDTH / 20;
+		for (const fMidiNumber of Keyboard.F_MIDI_NUMBERS) {
+			const lineWidth = Keyboard.IVORY_WIDTH / 20;
 			const x = fMidiNumber.x - lineWidth / 2;
 			const y = 0;
 			const lineHeight = canvasRef.height / scale;

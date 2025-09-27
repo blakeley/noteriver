@@ -2,7 +2,6 @@
 	import { T, useTask, useThrelte } from '@threlte/core';
 	import { OrbitControls, Portal, Outlines } from '@threlte/extras';
 	import * as THREE from 'three';
-	import { INTERSECTION, SUBTRACTION, Brush, Evaluator, ADDITION } from 'three-bvh-csg';
 	import type { Mesh } from 'three';
 
 	const { scene } = useThrelte();
@@ -21,63 +20,41 @@
 	let meshRef = $state.raw<Mesh>();
 	let rotation = $state({ x: 0, y: 0, z: 0 });
 
-	const evaluator = new Evaluator();
 	// Compute geometry based on smoothness
 	const geometry = $derived.by(() => {
-		// Create unit cube (side length = 1)
-		const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+		// 1) Rect shape in XY (we'll extrude along +Z)
+		const W = 1.0; // width (X)
+		const D = W * 5.5; // depth (Y)
+		const H = 1; // height (Z)
+		const fillet = 0.15; // top edge rounding radius
 
-		// Create second cube rotated 30° along X axis and positioned to form rhombus
-		const rotatedBoxGeometry = new THREE.BoxGeometry(1, Math.sqrt(3) / 8, 1);
-		const rotatedBoxBrush = new Brush(rotatedBoxGeometry);
-		rotatedBoxBrush.rotation.x = -Math.PI / 6;
-		// This math isn't quite right, but it's close enough
-		rotatedBoxBrush.position.y = -2 / 3;
-		rotatedBoxBrush.updateMatrixWorld();
+		const shape = new THREE.Shape();
+		shape.moveTo(0, 0);
+		shape.lineTo(W / 6, 0);
+		shape.lineTo(W, W / 2);
+		shape.lineTo(W, D);
+		shape.lineTo(0, D);
+		shape.lineTo(0, 0);
 
-		// Create sphere with radius sqrt(2)/2 centered at origin
-		const sphereGeometry = new THREE.SphereGeometry(Math.SQRT2 / 2, 2 * smoothness, smoothness);
+		// 2) Extrude with bevel to round the *top* perimeter edges
+		const geom = new THREE.ExtrudeGeometry(shape, {
+			depth: H,
 
-		// Create brushes at origin (0,0,0)
-		const boxBrush = new Brush(boxGeometry);
-		boxBrush.updateMatrixWorld();
+			bevelEnabled: true,
+			bevelThickness: fillet, // thickness into the top face
+			bevelSize: fillet, // how far in from the edge
+			bevelSegments: 4,
+			curveSegments: 4
+		});
 
-		// Combine the two cubes
-		const combinedCubes = evaluator.evaluate(boxBrush, rotatedBoxBrush, ADDITION);
+		geom.rotateY(-Math.PI / 2);
+		geom.rotateZ(0);
+		geom.rotateX(0);
 
-		// Early return to investigate the rhombus shape
-		combinedCubes.geometry.computeVertexNormals();
-		boxGeometry.dispose();
-		rotatedBoxGeometry.dispose();
-		sphereGeometry.dispose();
-		// return combinedCubes.geometry;
+		// Center it if you like
+		geom.translate(W / 2, (-D * 1) / 16, 0);
 
-		const sphereBrush = new Brush(sphereGeometry);
-		sphereBrush.updateMatrixWorld();
-
-		// Perform intersection operation with combined cubes and sphere
-		const intersectionResult = evaluator.evaluate(combinedCubes, sphereBrush, INTERSECTION);
-
-		// Create a second cube offset by 0.5 in Y direction
-		const offsetCubeGeometry = new THREE.BoxGeometry(1, 5.5);
-		const offsetCubeBrush = new Brush(offsetCubeGeometry);
-		offsetCubeBrush.position.y = offsetCubeGeometry.parameters.height / 2; // Position at edge of original cube
-		offsetCubeBrush.updateMatrixWorld();
-
-		// Subtract the offset cube from the intersection result
-		const finalResult = evaluator.evaluate(intersectionResult, offsetCubeBrush, ADDITION);
-
-		finalResult.geometry.computeVertexNormals();
-
-		// Cleanup source geometries
-		boxGeometry.dispose();
-		rotatedBoxGeometry.dispose();
-		sphereGeometry.dispose();
-		offsetCubeGeometry.dispose();
-		combinedCubes.geometry.dispose();
-		intersectionResult.geometry.dispose();
-
-		return finalResult.geometry;
+		return geom;
 	});
 
 	// rotation animation

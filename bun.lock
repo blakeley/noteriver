@@ -13,6 +13,7 @@
         "svelte-three": "^0.1.2",
         "three": "^0.180.0",
         "three-bvh-csg": "^0.0.17",
+        "three-csg-ts": "^3.2.0",
       },
       "devDependencies": {
         "@chromatic-com/storybook": "^4.1.1",
@@ -1133,6 +1134,8 @@
     "three": ["three@0.180.0", "", {}, "sha512-o+qycAMZrh+TsE01GqWUxUIKR1AL0S8pq7zDkYOQw8GqfX8b8VoCKYUoHbhiX5j+7hr8XsuHDVU6+gkQJQKg9w=="],
 
     "three-bvh-csg": ["three-bvh-csg@0.0.17", "", { "peerDependencies": { "three": ">=0.151.0", "three-mesh-bvh": ">=0.6.6" } }, "sha512-iEkHDF8GRfGM6593Cuw8SnF1vfENCp46gIAtRzuL4nGXGWPcR1sbTBwM9ptDONb5twqlZp5WkAKya5aBKe2qcA=="],
+
+    "three-csg-ts": ["three-csg-ts@3.2.0", "", { "peerDependencies": { "@types/three": ">= 0.154.0", "three": ">= 0.154.0" } }, "sha512-oTYg8kdal6qgHDbso/6VzA12Udf2ic2uXhf0XlJzuSP+Gs0OUR5gTHSZ7GotAE+M/QcVlw41eOwiWZVnJG5/8w=="],
 
     "three-instanced-uniforms-mesh": ["three-instanced-uniforms-mesh@0.52.4", "", { "dependencies": { "troika-three-utils": "^0.52.4" }, "peerDependencies": { "three": ">=0.125.0" } }, "sha512-YwDBy05hfKZQtU+Rp0KyDf9yH4GxfhxMbVt9OYruxdgLfPwmDG5oAbGoW0DrKtKZSM3BfFcCiejiOHCjFBTeng=="],
 
