@@ -13,5 +13,13 @@
 </script>
 
 <svg {x} y={0} width={Keyboard.IVORY_WIDTH} height={Keyboard.IVORY_HEIGHT}>
-	<rect x="0.01" rx="0.125" ry="0.125" width=".98" y="0.0" height="5.6125" fill={fill()} />
+	<rect
+		x="0.01"
+		rx="0.125"
+		ry="0.125"
+		width=".98"
+		y="0.0"
+		height={Keyboard.IVORY_HEIGHT}
+		fill={fill()}
+	/>
 </svg>

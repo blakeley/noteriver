@@ -14,7 +14,7 @@ export function createNoteGradientColors(baseColor: string) {
 		return {
 			lighter: baseColor,
 			base: baseColor,
-			darker: baseColor
+			darker: baseColor,
 		};
 	}
 
@@ -22,19 +22,19 @@ export function createNoteGradientColors(baseColor: string) {
 	// oklch lightness ranges from 0 (black) to 1 (white)
 	const lighterColor = {
 		...color,
-		l: Math.min(1, color.l + 0.25) // Increase lightness by 25%
+		l: Math.min(1, color.l + 0.25), // Increase lightness by 25%
 	};
 
 	const darkerColor = {
 		...color,
-		l: Math.max(0, color.l - 0.18) // Decrease lightness by 18%
+		l: Math.max(0, color.l - 0.18), // Decrease lightness by 18%
 	};
 
 	// Convert back to hex for canvas gradient
 	return {
 		lighter: formatHex(lighterColor) || baseColor,
 		base: baseColor,
-		darker: formatHex(darkerColor) || baseColor
+		darker: formatHex(darkerColor) || baseColor,
 	};
 }
 
@@ -50,7 +50,7 @@ export function createHorizontalGradient(
 	ctx: CanvasRenderingContext2D,
 	x: number,
 	width: number,
-	baseColor: string
+	baseColor: string,
 ): CanvasGradient {
 	const gradient = ctx.createLinearGradient(x, 0, x + width, 0);
 	const colors = createNoteGradientColors(baseColor);

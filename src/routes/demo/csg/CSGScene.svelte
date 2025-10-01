@@ -13,7 +13,7 @@
 		lightX = 0,
 		lightY = 0,
 		lightZ = 0,
-		lightIntensity = 1
+		lightIntensity = 1,
 	} = $props();
 
 	// state
@@ -44,7 +44,7 @@
 			bevelThickness: fillet, // thickness into the top face
 			bevelSize: fillet, // how far in from the edge
 			bevelSegments: 4,
-			curveSegments: 4
+			curveSegments: 4,
 		});
 
 		geom.rotateY(-Math.PI / 2);

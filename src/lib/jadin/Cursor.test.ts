@@ -16,7 +16,7 @@ function createNoteOnEvent(noteNumber: number, second: number): Event<NoteOnEven
 		type: 'channel',
 		subtype: 'noteOn',
 		noteNumber,
-		velocity: 20
+		velocity: 20,
 	};
 
 	return new Event(rawNoteOnEvent, TRACK, second * 960);
@@ -29,7 +29,7 @@ function createNoteOffEvent(noteNumber: number, second: number): Event<NoteOffEv
 		type: 'channel',
 		subtype: 'noteOff',
 		noteNumber,
-		velocity: 20
+		velocity: 20,
 	};
 
 	return new Event(rawNoteOffEvent, TRACK, second * 960);
@@ -46,7 +46,7 @@ describe('Cursor', () => {
 				createNoteOnEvent(48, 1),
 				createNoteOnEvent(49, 2),
 				createNoteOnEvent(50, 3),
-				createNoteOnEvent(51, 4)
+				createNoteOnEvent(51, 4),
 			];
 			const cursor = new Cursor(events);
 
@@ -58,7 +58,7 @@ describe('Cursor', () => {
 				createNoteOnEvent(48, 1),
 				createNoteOnEvent(49, 2),
 				createNoteOnEvent(50, 3),
-				createNoteOnEvent(51, 4)
+				createNoteOnEvent(51, 4),
 			];
 			const cursor = new Cursor(events);
 			cursor.forward(2);
@@ -72,7 +72,7 @@ describe('Cursor', () => {
 				createNoteOnEvent(48, 1),
 				createNoteOnEvent(49, 2),
 				createNoteOnEvent(50, 3),
-				createNoteOnEvent(51, 4)
+				createNoteOnEvent(51, 4),
 			];
 			const cursor = new Cursor(events);
 			cursor.forward(9999);
@@ -94,7 +94,7 @@ describe('Cursor', () => {
 				createNoteOnEvent(60, 2),
 				createNoteOnEvent(61, 2),
 				createNoteOnEvent(62, 3),
-				createNoteOnEvent(63, 5)
+				createNoteOnEvent(63, 5),
 			];
 			const cursor = new Cursor(events);
 			cursor.forward(2);
@@ -106,7 +106,7 @@ describe('Cursor', () => {
 			const events = [
 				createNoteOnEvent(60, 1),
 				createNoteOnEvent(61, 2),
-				createNoteOffEvent(60, 3)
+				createNoteOffEvent(60, 3),
 			];
 			const cursor = new Cursor(events);
 			cursor.forward(4);
@@ -121,7 +121,7 @@ describe('Cursor', () => {
 				createNoteOnEvent(48, 1),
 				createNoteOnEvent(49, 2),
 				createNoteOnEvent(50, 3),
-				createNoteOnEvent(51, 4)
+				createNoteOnEvent(51, 4),
 			];
 			const cursor = new Cursor(events);
 
@@ -135,7 +135,7 @@ describe('Cursor', () => {
 				createNoteOnEvent(48, 1),
 				createNoteOnEvent(49, 2),
 				createNoteOnEvent(50, 3),
-				createNoteOnEvent(51, 4)
+				createNoteOnEvent(51, 4),
 			];
 			const cursor = new Cursor(events);
 
@@ -151,7 +151,7 @@ describe('Cursor', () => {
 				createNoteOnEvent(48, 1),
 				createNoteOnEvent(49, 2),
 				createNoteOnEvent(50, 3),
-				createNoteOnEvent(51, 4)
+				createNoteOnEvent(51, 4),
 			];
 			const cursor = new Cursor(events);
 			cursor.backward(-10);
@@ -173,7 +173,7 @@ describe('Cursor', () => {
 				createNoteOffEvent(60, 2),
 				createNoteOffEvent(61, 2),
 				createNoteOffEvent(62, 3),
-				createNoteOffEvent(63, 4)
+				createNoteOffEvent(63, 4),
 			];
 			const cursor = new Cursor(events);
 			cursor.forward(5);

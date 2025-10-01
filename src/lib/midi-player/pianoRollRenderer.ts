@@ -39,7 +39,7 @@ function getMeasureBoundaries(midi: jadin.Midi, startTime: number, endTime: numb
 		const bpm = 60000000 / event.raw.microsecondsPerBeat;
 		tempoChanges.push({
 			second: event.second,
-			bpm: bpm
+			bpm: bpm,
 		});
 	}
 
@@ -51,7 +51,7 @@ function getMeasureBoundaries(midi: jadin.Midi, startTime: number, endTime: numb
 				second: event.second,
 				numerator: tsEvent.numerator,
 				denominator: tsEvent.denominator,
-				beatsPerMeasure: tsEvent.numerator
+				beatsPerMeasure: tsEvent.numerator,
 			});
 		}
 	}
@@ -62,13 +62,13 @@ function getMeasureBoundaries(midi: jadin.Midi, startTime: number, endTime: numb
 			second: 0,
 			numerator: 4,
 			denominator: 4,
-			beatsPerMeasure: 4
+			beatsPerMeasure: 4,
 		});
 	}
 	if (tempoChanges.length === 0) {
 		tempoChanges.push({
 			second: 0,
-			bpm: 120
+			bpm: 120,
 		});
 	}
 
@@ -119,7 +119,7 @@ export function drawPianoRoll({
 	lowNumber = 21,
 	highNumber = 108,
 	timeScale = 10,
-	showGridLines = true
+	showGridLines = true,
 }: DrawOptions) {
 	const lowMidiNumber = new MidiNumber(lowNumber);
 	const highMidiNumber = new MidiNumber(highNumber);

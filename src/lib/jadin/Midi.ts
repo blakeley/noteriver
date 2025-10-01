@@ -94,10 +94,10 @@ export default class Midi {
 				type: 'meta',
 				subtype: 'setTempo',
 				deltaTime: 0,
-				microsecondsPerBeat: 500_000
+				microsecondsPerBeat: 500_000,
 			},
 			this.tracks[0],
-			0
+			0,
 		);
 
 		for (let setTempoEvent of this.tempoEvents) {
@@ -124,7 +124,7 @@ export default class Midi {
 
 	notesOnDuring(onSecond: number, offSecond: number): Note[] {
 		return [].concat(
-			...(this.tracks.map((track) => track.notesOnDuring(onSecond, offSecond)) as any)
+			...(this.tracks.map((track) => track.notesOnDuring(onSecond, offSecond)) as any),
 		);
 	}
 
@@ -138,7 +138,7 @@ export default class Midi {
 			const bpm = 60000000 / event.raw.microsecondsPerBeat;
 			tempoChanges.push({
 				second: event.second,
-				bpm: bpm
+				bpm: bpm,
 			});
 		}
 
@@ -150,7 +150,7 @@ export default class Midi {
 					second: event.second,
 					numerator: tsEvent.numerator,
 					denominator: tsEvent.denominator,
-					beatsPerMeasure: tsEvent.numerator
+					beatsPerMeasure: tsEvent.numerator,
 				});
 			}
 		}
@@ -161,13 +161,13 @@ export default class Midi {
 				second: 0,
 				numerator: 4,
 				denominator: 4,
-				beatsPerMeasure: 4
+				beatsPerMeasure: 4,
 			});
 		}
 		if (tempoChanges.length === 0) {
 			tempoChanges.push({
 				second: 0,
-				bpm: 120
+				bpm: 120,
 			});
 		}
 

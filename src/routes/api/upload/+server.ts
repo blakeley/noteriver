@@ -37,13 +37,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				description: description?.trim() || null,
 				duration: 0, // TODO: Parse MIDI to get actual duration
 				instruments: [], // TODO: Parse MIDI to get instruments
-				createdById: user?.id || null
+				createdById: user?.id || null,
 			})
 			.returning();
 
 		return json({
 			success: true,
-			midi: newMidi
+			midi: newMidi,
 		});
 	} catch (error) {
 		console.error('Upload error:', error);

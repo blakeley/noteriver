@@ -10,9 +10,9 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			'~': 'src',
-			jadin: 'src/lib/jadin'
-		}
-	}
+			jadin: 'src/lib/jadin',
+		},
+	},
 };
 
 export default config;

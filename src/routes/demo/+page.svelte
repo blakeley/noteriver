@@ -2,20 +2,20 @@
 	const demos = [
 		{
 			title: 'Lucia Auth',
-			path: '/demo/lucia'
+			path: '/demo/lucia',
 		},
 		{
 			title: '3D Scene',
-			path: '/demo/scene'
+			path: '/demo/scene',
 		},
 		{
 			title: '3D Piano',
-			path: '/demo/piano'
+			path: '/demo/piano',
 		},
 		{
 			title: 'CSG Demo',
-			path: '/demo/csg'
-		}
+			path: '/demo/csg',
+		},
 	];
 </script>
 

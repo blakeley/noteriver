@@ -18,15 +18,15 @@
 				track
 					.notesOnAt(playerState.time)
 					.filter((note) => note.number !== undefined)
-					.map((note) => ({ noteNumber: note.number!, trackIndex: track.index }))
+					.map((note) => ({ noteNumber: note.number!, trackIndex: track.index })),
 			)
 			.reduce(
 				(states, { noteNumber, trackIndex }) => ({
 					...states,
-					[noteNumber]: trackIndex
+					[noteNumber]: trackIndex,
 				}),
-				{}
-			) || {}
+				{},
+			) || {},
 	);
 </script>
 
@@ -39,14 +39,14 @@
 		{/each}
 
 		<!-- Burgundy bar at the top of the keys -->
-		<rect x={vbx} y={Keyboard.IVORY_HEIGHT - 0.12} width={vbw} height="0.12" fill="#800020" />
+		<rect x={vbx} y={Keyboard.IVORY_HEIGHT - 0.12} width={vbw} height={0.12} fill="#800020" />
 
 		{#each Keyboard.EBONY_MIDI_NUMBERS as midiNumber (midiNumber.number)}
 			<EbonyKey x={midiNumber.x} pressed={keyStates[midiNumber.number]} />
 		{/each}
 
 		<!-- Gray felt line above keys -->
-		<rect x={vbx} y={5.5} width={vbw} height="0.125" fill="#3a3a3a" />
-		<rect x={vbx} y={5.625} width={vbw} height="0.025" fill="#1a1a1a" />
+		<rect x={vbx} y={Keyboard.IVORY_HEIGHT} width={vbw} height={0.125} fill="#3a3a3a" />
+		<rect x={vbx} y={Keyboard.IVORY_HEIGHT} width={vbw} height={0.025} fill="#1a1a1a" />
 	</svg>
 </div>

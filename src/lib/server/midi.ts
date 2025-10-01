@@ -30,7 +30,7 @@ export interface MidiListResult {
 export async function getMidiList(
 	searchQuery: string = '',
 	page: number = 0,
-	limit: number = 20
+	limit: number = 20,
 ): Promise<MidiListResult> {
 	const offset = page * limit;
 
@@ -39,7 +39,7 @@ export async function getMidiList(
 		const baseQuery = db
 			.select({
 				midi: midis,
-				createdBy: users
+				createdBy: users,
 			})
 			.from(midis)
 			.leftJoin(users, eq(midis.createdById, users.id));
@@ -69,15 +69,15 @@ export async function getMidiList(
 					...row.midi,
 					createdBy: row.createdBy || undefined,
 					commentsCount: commentsResult?.count || 0,
-					favoritesCount: favoritesResult?.count || 0
+					favoritesCount: favoritesResult?.count || 0,
 				};
-			})
+			}),
 		);
 
 		return {
 			midis: midiList,
 			page,
-			hasMore: midiList.length === limit
+			hasMore: midiList.length === limit,
 		};
 	} catch (error) {
 		console.error('Error fetching MIDI files:', error);
@@ -90,7 +90,7 @@ export async function getMidiById(id: number): Promise<MidiWithRelations | null>
 		const result = await db
 			.select({
 				midi: midis,
-				createdBy: users
+				createdBy: users,
 			})
 			.from(midis)
 			.leftJoin(users, eq(midis.createdById, users.id))
@@ -119,7 +119,7 @@ export async function getMidiById(id: number): Promise<MidiWithRelations | null>
 			...row.midi,
 			createdBy: row.createdBy || undefined,
 			commentsCount: commentsResult?.count || 0,
-			favoritesCount: favoritesResult?.count || 0
+			favoritesCount: favoritesResult?.count || 0,
 		};
 	} catch (error) {
 		console.error('Error fetching MIDI by ID:', error);

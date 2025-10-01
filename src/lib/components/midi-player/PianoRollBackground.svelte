@@ -11,7 +11,7 @@
 		playerState.width /
 			(playerState.highMidiNumber.x -
 				playerState.lowMidiNumber.x +
-				playerState.highMidiNumber.width)
+				playerState.highMidiNumber.width),
 	);
 
 	function draw() {

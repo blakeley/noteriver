@@ -16,7 +16,7 @@ export class NoteRiverS3Stack extends cdk.Stack {
 		const bucket = new s3.Bucket(this, 'MidiBucket', {
 			bucketName: 'noteriver.com',
 			publicReadAccess: false,
-			blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL
+			blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
 		});
 
 		// Create Origin Access Identity for CloudFront
@@ -28,10 +28,10 @@ export class NoteRiverS3Stack extends cdk.Stack {
 		// Create CloudFront Function for URL rewriting
 		const midiRewriteFunction = new cloudfront.Function(this, 'MidiRewriteFunction', {
 			code: cloudfront.FunctionCode.fromInline(
-				readFileSync(join(__dirname, 'cloudfront-functions', 'midi-url-rewrite.js'), 'utf8')
+				readFileSync(join(__dirname, 'cloudfront-functions', 'midi-url-rewrite.js'), 'utf8'),
 			),
 			comment: 'Rewrite MIDI URLs to remove filenames',
-			runtime: cloudfront.FunctionRuntime.JS_2_0
+			runtime: cloudfront.FunctionRuntime.JS_2_0,
 		});
 
 		// Create ACM certificate for noteriver.com
@@ -39,14 +39,14 @@ export class NoteRiverS3Stack extends cdk.Stack {
 		const certificate = new acm.Certificate(this, 'Certificate', {
 			domainName: 'noteriver.com',
 			subjectAlternativeNames: ['*.noteriver.com'],
-			validation: acm.CertificateValidation.fromDns()
+			validation: acm.CertificateValidation.fromDns(),
 		});
 
 		// Create CloudFront distribution
 		const distribution = new cloudfront.Distribution(this, 'NoteriverCDN', {
 			defaultBehavior: {
 				origin: origins.S3BucketOrigin.withOriginAccessIdentity(bucket, {
-					originAccessIdentity
+					originAccessIdentity,
 				}),
 				viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
@@ -54,28 +54,28 @@ export class NoteRiverS3Stack extends cdk.Stack {
 				functionAssociations: [
 					{
 						function: midiRewriteFunction,
-						eventType: cloudfront.FunctionEventType.VIEWER_REQUEST
-					}
-				]
+						eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+					},
+				],
 			},
 			domainNames: ['cdn.noteriver.com'],
-			certificate
+			certificate,
 		});
 
 		// Output CloudFront URL
 		new cdk.CfnOutput(this, 'DistributionURL', {
 			value: `https://${distribution.distributionDomainName}`,
-			description: 'CloudFront distribution URL'
+			description: 'CloudFront distribution URL',
 		});
 
 		new cdk.CfnOutput(this, 'CustomDomain', {
 			value: 'https://cdn.noteriver.com',
-			description: 'Custom domain for CDN'
+			description: 'Custom domain for CDN',
 		});
 
 		new cdk.CfnOutput(this, 'CertificateArn', {
 			value: certificate.certificateArn,
-			description: 'ACM Certificate ARN'
+			description: 'ACM Certificate ARN',
 		});
 	}
 }
@@ -85,6 +85,6 @@ const app = new cdk.App();
 new NoteRiverS3Stack(app, 'NoteRiverS3Stack', {
 	env: {
 		region: 'us-east-1', // Must be us-east-1 for CloudFront certificates
-		account: process.env.CDK_DEFAULT_ACCOUNT || process.env.AWS_ACCOUNT_ID
-	}
+		account: process.env.CDK_DEFAULT_ACCOUNT || process.env.AWS_ACCOUNT_ID,
+	},
 });

@@ -3,7 +3,7 @@
 	import type { MidiWithRelations } from '$lib/server/midi';
 
 	let {
-		midis = []
+		midis = [],
 	}: {
 		midis?: MidiWithRelations[];
 	} = $props();

@@ -1,7 +1,7 @@
 import type * as jadin from 'jadin';
 import {
 	MIDI_NOTE_NUMBER_TO_NOTE_NAME,
-	PATCH_NUMBER_TO_INSTRUMENT_NAME
+	PATCH_NUMBER_TO_INSTRUMENT_NAME,
 } from './synthesizer-utils';
 
 export class Synthesizer {
@@ -60,7 +60,7 @@ export class Synthesizer {
 	playNote(
 		note: jadin.Event<jadin.NoteOnEvent>,
 		startWhen: number = 0,
-		{ gainValue = 1.0, startBufferOffset = 0, sustainDuration = 0.125, fadeDuration = 1.25 } = {}
+		{ gainValue = 1.0, startBufferOffset = 0, sustainDuration = 0.125, fadeDuration = 1.25 } = {},
 	) {
 		if (!this.audioContext) return;
 		const key = this.noteToUrl(note);

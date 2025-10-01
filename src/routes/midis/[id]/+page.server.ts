@@ -20,6 +20,6 @@ export const load: PageServerLoad = async ({ params }) => {
 
 	return {
 		midiData,
-		otherMidis: otherMidis.midis.filter((m) => m.id !== id) // Exclude current midi
+		otherMidis: otherMidis.midis.filter((m) => m.id !== id), // Exclude current midi
 	};
 };

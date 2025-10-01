@@ -3,13 +3,13 @@
 		{
 			title: '3D Scene Demo',
 			description: 'A rotating cube with lighting and effects',
-			path: '/demo/scene'
+			path: '/demo/scene',
 		},
 		{
 			title: '3D Piano Keyboard',
 			description: 'An interactive 88-key piano keyboard in 3D',
-			path: '/demo/piano'
-		}
+			path: '/demo/piano',
+		},
 	];
 </script>
 

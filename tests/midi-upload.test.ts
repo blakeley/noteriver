@@ -27,7 +27,7 @@ describe('MIDI Upload Flow', () => {
 		// Send upload request
 		const response = await fetch(`${BASE_URL}/api/upload`, {
 			method: 'POST',
-			body: formData
+			body: formData,
 		});
 
 		// Check response
@@ -50,7 +50,7 @@ describe('MIDI Upload Flow', () => {
 		console.log('✓ Upload successful:', {
 			id: data.midi.id,
 			s3key: data.midi.s3key,
-			title: data.midi.title
+			title: data.midi.title,
 		});
 	});
 
@@ -65,7 +65,7 @@ describe('MIDI Upload Flow', () => {
 
 		const response = await fetch(`${BASE_URL}/api/upload`, {
 			method: 'POST',
-			body: formData
+			body: formData,
 		});
 
 		expect(response.ok).toBe(false);
@@ -87,7 +87,7 @@ describe('MIDI Upload Flow', () => {
 
 		const response = await fetch(`${BASE_URL}/api/upload`, {
 			method: 'POST',
-			body: formData
+			body: formData,
 		});
 
 		expect(response.ok).toBe(false);
@@ -109,7 +109,7 @@ describe('MIDI Upload Flow', () => {
 
 		const response = await fetch(`${BASE_URL}/api/upload`, {
 			method: 'POST',
-			body: formData
+			body: formData,
 		});
 
 		expect(response.ok).toBe(true);
@@ -135,7 +135,7 @@ describe('MIDI Upload Flow', () => {
 
 			const response = await fetch(`${BASE_URL}/api/upload`, {
 				method: 'POST',
-				body: formData
+				body: formData,
 			});
 
 			const data = await response.json();

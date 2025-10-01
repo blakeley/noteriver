@@ -6,7 +6,7 @@ export class Event<T extends RawEvent = RawEvent> {
 	constructor(
 		public readonly raw: T,
 		public readonly track: Track,
-		public readonly tick: number
+		public readonly tick: number,
 	) {}
 
 	get midi(): Midi {

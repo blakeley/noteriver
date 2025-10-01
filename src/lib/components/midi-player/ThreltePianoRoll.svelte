@@ -11,13 +11,13 @@
 		playerState.width /
 			(playerState.highMidiNumber.x -
 				playerState.lowMidiNumber.x +
-				playerState.highMidiNumber.width)
+				playerState.highMidiNumber.width),
 	);
 
 	const cameraPosition = $derived<[number, number, number]>([
 		playerState.width / 2,
 		playerState.height / 2,
-		100
+		100,
 	]);
 </script>
 
@@ -30,7 +30,7 @@
 				position={[
 					-playerState.lowMidiNumber.x,
 					playerState.time * playerState.timeScale - Keyboard.IVORY_HEIGHT,
-					0
+					0,
 				]}
 			>
 				{#if playerState.loadedMidi}

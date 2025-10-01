@@ -14,7 +14,7 @@
 		top = $bindable(),
 		bottom = $bindable(),
 		near = $bindable(),
-		far = $bindable()
+		far = $bindable(),
 	}: Props = $props();
 </script>
 

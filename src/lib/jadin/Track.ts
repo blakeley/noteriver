@@ -87,7 +87,7 @@ export default class Track {
 	get instrumentName() {
 		return this.events.find(
 			(event): event is Event<InstrumentNameEvent> =>
-				event.raw.type === 'meta' && event.raw.subtype === 'instrumentName'
+				event.raw.type === 'meta' && event.raw.subtype === 'instrumentName',
 		)?.raw.text;
 	}
 }

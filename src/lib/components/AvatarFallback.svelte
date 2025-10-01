@@ -12,7 +12,7 @@
 		size = 36,
 		style = '',
 		class: className = '',
-		displayShimmer = false
+		displayShimmer = false,
 	}: {
 		user?: SimpleUser | null;
 		size?: number | string;
@@ -33,7 +33,7 @@
 		'#0081ba',
 		'#005c86',
 		'#003854',
-		'#001b2b'
+		'#001b2b',
 	];
 	const ROUNDING = 0.125;
 	const NUMBER_OF_LINES = 6;
@@ -55,7 +55,7 @@
 
 	const generateRandomNumber = $derived(seededRandom(user?.username || '43'));
 	const fill = $derived(
-		user?.username ? COLORS[Math.floor(generateRandomNumber() * COLORS.length)] : '#999999'
+		user?.username ? COLORS[Math.floor(generateRandomNumber() * COLORS.length)] : '#999999',
 	);
 	const rotation = $derived(generateRandomNumber() * 360);
 </script>

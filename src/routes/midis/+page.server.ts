@@ -8,6 +8,6 @@ export const load: PageServerLoad = async ({ url }) => {
 	return {
 		initialMidis: initialData.midis,
 		hasMore: initialData.hasMore,
-		searchQuery
+		searchQuery,
 	};
 };

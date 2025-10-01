@@ -5,7 +5,7 @@ import {
 	text,
 	timestamp,
 	doublePrecision,
-	primaryKey
+	primaryKey,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -13,7 +13,7 @@ export const users = pgTable('users', {
 	id: text('id').primaryKey(),
 	age: integer('age'),
 	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull()
+	passwordHash: text('password_hash').notNull(),
 });
 
 export const sessions = pgTable('sessions', {
@@ -21,7 +21,7 @@ export const sessions = pgTable('sessions', {
 	userId: text('user_id')
 		.notNull()
 		.references(() => users.id),
-	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
 });
 
 export const midis = pgTable('midis', {
@@ -33,7 +33,7 @@ export const midis = pgTable('midis', {
 	title: text('title').notNull(),
 	description: text('description'),
 	duration: doublePrecision('duration').notNull(),
-	instruments: integer('instruments').array()
+	instruments: integer('instruments').array(),
 });
 
 export const favorites = pgTable(
@@ -44,13 +44,13 @@ export const favorites = pgTable(
 			.references(() => users.id),
 		midiId: integer('midi_id')
 			.notNull()
-			.references(() => midis.id)
+			.references(() => midis.id),
 	},
 	(table) => {
 		return {
-			pk: primaryKey({ columns: [table.userId, table.midiId] })
+			pk: primaryKey({ columns: [table.userId, table.midiId] }),
 		};
-	}
+	},
 );
 
 export const comments = pgTable('comments', {
@@ -63,7 +63,7 @@ export const comments = pgTable('comments', {
 	midiId: integer('midi_id')
 		.notNull()
 		.references(() => midis.id),
-	text: text('text').notNull()
+	text: text('text').notNull(),
 });
 
 // Relations
@@ -71,45 +71,45 @@ export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(sessions),
 	midis: many(midis),
 	favorites: many(favorites),
-	comments: many(comments)
+	comments: many(comments),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
 	user: one(users, {
 		fields: [sessions.userId],
-		references: [users.id]
-	})
+		references: [users.id],
+	}),
 }));
 
 export const midisRelations = relations(midis, ({ one, many }) => ({
 	createdBy: one(users, {
 		fields: [midis.createdById],
-		references: [users.id]
+		references: [users.id],
 	}),
 	favorites: many(favorites),
-	comments: many(comments)
+	comments: many(comments),
 }));
 
 export const favoritesRelations = relations(favorites, ({ one }) => ({
 	user: one(users, {
 		fields: [favorites.userId],
-		references: [users.id]
+		references: [users.id],
 	}),
 	midi: one(midis, {
 		fields: [favorites.midiId],
-		references: [midis.id]
-	})
+		references: [midis.id],
+	}),
 }));
 
 export const commentsRelations = relations(comments, ({ one }) => ({
 	user: one(users, {
 		fields: [comments.userId],
-		references: [users.id]
+		references: [users.id],
 	}),
 	midi: one(midis, {
 		fields: [comments.midiId],
-		references: [midis.id]
-	})
+		references: [midis.id],
+	}),
 }));
 
 // Type exports

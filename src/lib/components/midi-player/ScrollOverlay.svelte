@@ -8,7 +8,7 @@
 
 	// Calculate window height in seconds (same as in MidiPlayer)
 	const windowHeightInSeconds = $derived(
-		playerState.loadedMidi ? playerState.loadedMidi.duration + 2 : 1
+		playerState.loadedMidi ? playerState.loadedMidi.duration + 2 : 1,
 	);
 
 	// Calculate duration in pixels for the scrollable height
@@ -18,7 +18,7 @@
 					playerState.timeScale *
 					(playerState.width / playerState.height) *
 					(playerState.highMidiNumber.x - playerState.lowMidiNumber.x + Keyboard.IVORY_WIDTH)
-			: 0
+			: 0,
 	);
 
 	function onscroll() {

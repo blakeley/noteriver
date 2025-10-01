@@ -14,8 +14,8 @@
 			100,
 			playerState.duration > 0
 				? ((playerState.time - PLAYER_INITIAL_TIME_OFFSET) / totalRange) * 100
-				: 0
-		)
+				: 0,
+		),
 	);
 
 	function updateTimeFromPosition(clientX: number) {

@@ -15,7 +15,7 @@
 
 	let {
 		s3key,
-		thumbnail = false
+		thumbnail = false,
 	}: {
 		s3key: string;
 		thumbnail?: boolean;
@@ -39,7 +39,7 @@
 		highMidiNumber: new MidiNumber(108),
 		timeScale: 10, // Number of ivory key widths in one second of piano roll
 		togglePlayPause: () => togglePlayPause(),
-		visualMode: 'threlte' as 'threlte' | 'canvas'
+		visualMode: 'threlte' as 'threlte' | 'canvas',
 	});
 
 	let initialPositionSecond = 0;
@@ -91,7 +91,7 @@
 					Synthesizer.getInstance().playNote(
 						event as jadin.Event<jadin.NoteOnEvent>,
 						event.second - currentPosition,
-						{ gainValue }
+						{ gainValue },
 					);
 				}
 			}

@@ -20,9 +20,9 @@ export const GET: RequestHandler = async ({ params }) => {
 			{ midiBase64: base64 },
 			{
 				headers: {
-					'Cache-Control': 'public, max-age=3600' // Cache for 1 hour
-				}
-			}
+					'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+				},
+			},
 		);
 	} catch (error) {
 		console.error('Error fetching MIDI from S3:', error);

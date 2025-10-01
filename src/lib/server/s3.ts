@@ -4,20 +4,20 @@ import {
 	AWS_ACCESS_KEY_ID,
 	AWS_SECRET_ACCESS_KEY,
 	AWS_REGION,
-	AWS_S3_BUCKET
+	AWS_S3_BUCKET,
 } from '$env/static/private';
 
 const s3Client = new S3Client({
 	region: AWS_REGION || 'us-east-1',
 	credentials: {
 		accessKeyId: AWS_ACCESS_KEY_ID,
-		secretAccessKey: AWS_SECRET_ACCESS_KEY
-	}
+		secretAccessKey: AWS_SECRET_ACCESS_KEY,
+	},
 });
 
 export async function uploadMidiToS3(
 	fileBuffer: Buffer,
-	fileName: string
+	fileName: string,
 ): Promise<{ s3key: string }> {
 	const md5 = createHash('md5').update(fileBuffer).digest('hex');
 	const s3key = `midis/${md5}/${fileName}`;
@@ -26,7 +26,7 @@ export async function uploadMidiToS3(
 		Bucket: AWS_S3_BUCKET || 'noteriver.com',
 		Key: s3key,
 		Body: fileBuffer,
-		ContentType: 'audio/midi'
+		ContentType: 'audio/midi',
 	});
 
 	await s3Client.send(command);
@@ -37,7 +37,7 @@ export async function uploadMidiToS3(
 export async function getMidiFromS3(s3key: string): Promise<ArrayBuffer> {
 	const command = new GetObjectCommand({
 		Bucket: AWS_S3_BUCKET || 'noteriver.com',
-		Key: s3key
+		Key: s3key,
 	});
 
 	const response = await s3Client.send(command);

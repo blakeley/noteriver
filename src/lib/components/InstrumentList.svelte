@@ -1,6 +1,6 @@
 <script lang="ts">
 	let {
-		instruments = []
+		instruments = [],
 	}: {
 		instruments?: number[];
 	} = $props();
@@ -133,7 +133,7 @@
 		'Telephone Ring',
 		'Helicopter',
 		'Applause',
-		'Gunshot'
+		'Gunshot',
 	];
 </script>
 

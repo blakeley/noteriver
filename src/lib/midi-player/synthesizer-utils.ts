@@ -86,7 +86,7 @@ export const NOTE_NAME_TO_MIDI_NOTE_NUMBER = new Map([
 	['A7', 105],
 	['Bb7', 106],
 	['B7', 107],
-	['C8', 108]
+	['C8', 108],
 ]);
 
 export const MIDI_NOTE_NUMBER_TO_NOTE_NAME = new Map([
@@ -177,7 +177,7 @@ export const MIDI_NOTE_NUMBER_TO_NOTE_NAME = new Map([
 	[105, 'A7'],
 	[106, 'Bb7'],
 	[107, 'B7'],
-	[108, 'C8']
+	[108, 'C8'],
 ]);
 
 export const PATCH_NUMBER_TO_INSTRUMENT_NAME = [
@@ -324,5 +324,5 @@ export const PATCH_NUMBER_TO_INSTRUMENT_NAME = [
 	'telephone_ring',
 	'helicopter',
 	'applause',
-	'gunshot'
+	'gunshot',
 ];

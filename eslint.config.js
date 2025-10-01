@@ -23,7 +23,7 @@ export default defineConfig(
 	...svelte.configs.prettier,
 	{
 		languageOptions: {
-			globals: { ...globals.browser, ...globals.node }
+			globals: { ...globals.browser, ...globals.node },
 		},
 		rules: {
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
@@ -36,20 +36,20 @@ export default defineConfig(
 						{
 							name: 'drizzle-orm',
 							importNames: ['sql'],
-							message: 'Raw SQL string banned. Instead, use Drizzle ORM functions'
-						}
+							message: 'Raw SQL string banned. Instead, use Drizzle ORM functions',
+						},
 					],
 					patterns: [
 						{
 							group: ['../*'],
-							message: 'Relative imports with "../" are not allowed. Use absolute imports instead.'
-						}
-					]
-				}
+							message: 'Relative imports with "../" are not allowed. Use absolute imports instead.',
+						},
+					],
+				},
 			],
 			'@typescript-eslint/no-unused-vars': 'error',
-			'svelte/no-navigation-without-resolve': 'off'
-		}
+			'svelte/no-navigation-without-resolve': 'off',
+		},
 	},
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
@@ -58,8 +58,8 @@ export default defineConfig(
 				projectService: true,
 				extraFileExtensions: ['.svelte'],
 				parser: ts.parser,
-				svelteConfig
-			}
-		}
-	}
+				svelteConfig,
+			},
+		},
+	},
 );

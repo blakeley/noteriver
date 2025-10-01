@@ -4,18 +4,18 @@ import fs from 'fs';
 const gltf = {
 	asset: {
 		generator: 'Test Generator',
-		version: '2.0'
+		version: '2.0',
 	},
 	scene: 0,
 	scenes: [
 		{
-			nodes: [0]
-		}
+			nodes: [0],
+		},
 	],
 	nodes: [
 		{
-			mesh: 0
-		}
+			mesh: 0,
+		},
 	],
 	meshes: [
 		{
@@ -23,37 +23,37 @@ const gltf = {
 				{
 					attributes: {
 						POSITION: 0,
-						NORMAL: 1
+						NORMAL: 1,
 					},
-					indices: 2
-				}
-			]
-		}
+					indices: 2,
+				},
+			],
+		},
 	],
 	buffers: [
 		{
-			byteLength: 240
-		}
+			byteLength: 240,
+		},
 	],
 	bufferViews: [
 		{
 			buffer: 0,
 			byteOffset: 0,
 			byteLength: 96,
-			target: 34962
+			target: 34962,
 		},
 		{
 			buffer: 0,
 			byteOffset: 96,
 			byteLength: 96,
-			target: 34962
+			target: 34962,
 		},
 		{
 			buffer: 0,
 			byteOffset: 192,
 			byteLength: 48,
-			target: 34963
-		}
+			target: 34963,
+		},
 	],
 	accessors: [
 		{
@@ -63,35 +63,35 @@ const gltf = {
 			count: 8,
 			type: 'VEC3',
 			min: [-0.5, -0.5, -0.5],
-			max: [0.5, 0.5, 0.5]
+			max: [0.5, 0.5, 0.5],
 		},
 		{
 			bufferView: 1,
 			byteOffset: 0,
 			componentType: 5126,
 			count: 8,
-			type: 'VEC3'
+			type: 'VEC3',
 		},
 		{
 			bufferView: 2,
 			byteOffset: 0,
 			componentType: 5123,
 			count: 24,
-			type: 'SCALAR'
-		}
-	]
+			type: 'SCALAR',
+		},
+	],
 };
 
 // Cube vertices (8 corners)
 const positions = new Float32Array([
 	-0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5,
-	0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5
+	0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5,
 ]);
 
 // Normals (same as positions for a cube)
 const normals = new Float32Array([
 	-0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5,
-	0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5
+	0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5,
 ]);
 
 // Indices for cube faces (6 faces, 2 triangles each, 3 vertices per triangle)
@@ -119,14 +119,14 @@ const indices = new Uint16Array([
 	6,
 	6,
 	2,
-	1 // right
+	1, // right
 ]);
 
 // Create binary buffer
 const bufferData = Buffer.concat([
 	Buffer.from(positions.buffer),
 	Buffer.from(normals.buffer),
-	Buffer.from(indices.buffer)
+	Buffer.from(indices.buffer),
 ]);
 
 // Create GLB file
@@ -137,7 +137,7 @@ const jsonBuffer = Buffer.from(jsonString);
 const jsonPadding = (4 - (jsonBuffer.length % 4)) % 4;
 const paddedJsonBuffer = Buffer.concat([
 	jsonBuffer,
-	Buffer.alloc(jsonPadding, 0x20) // Space padding
+	Buffer.alloc(jsonPadding, 0x20), // Space padding
 ]);
 
 // GLB Header
@@ -162,7 +162,7 @@ const glb = Buffer.concat([
 	jsonChunkHeader,
 	paddedJsonBuffer,
 	binChunkHeader,
-	bufferData
+	bufferData,
 ]);
 
 // Write to file

@@ -7,7 +7,7 @@
 	const playerState = getPlayerContext();
 
 	let {
-		indexParity
+		indexParity,
 	}: {
 		indexParity: boolean;
 	} = $props();
@@ -19,7 +19,7 @@
 		playerState.width /
 			(playerState.highMidiNumber.x -
 				playerState.lowMidiNumber.x +
-				playerState.highMidiNumber.width)
+				playerState.highMidiNumber.width),
 	);
 
 	const duration = $derived(playerState.height / (scale * playerState.timeScale));

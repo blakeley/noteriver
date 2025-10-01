@@ -6,7 +6,7 @@
 	import * as jadin from 'jadin';
 
 	let {
-		note
+		note,
 	}: {
 		note: jadin.Note;
 	} = $props();
@@ -28,7 +28,7 @@
 
 	// Create material with gradient simulation using vertex colors
 	const material = new THREE.MeshBasicMaterial({
-		color: baseColor
+		color: baseColor,
 	});
 </script>
 

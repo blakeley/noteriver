@@ -1,7 +1,7 @@
 <script lang="ts">
 	let {
 		style = '',
-		class: className = ''
+		class: className = '',
 	}: {
 		style?: string;
 		class?: string;

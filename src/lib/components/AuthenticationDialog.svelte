@@ -3,7 +3,7 @@
 
 	let {
 		open = false,
-		onClose
+		onClose,
 	}: {
 		open?: boolean;
 		onClose?: () => void;

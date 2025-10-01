@@ -24,7 +24,7 @@ import {
 	ControllerEvent,
 	ProgramChangeEvent,
 	ChannelAftertouchEvent,
-	PitchBendEvent
+	PitchBendEvent,
 } from './event';
 
 import MidiReader from './MidiReader';

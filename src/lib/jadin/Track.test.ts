@@ -21,7 +21,7 @@ describe('Track', function () {
 			deltaTime: 60,
 			type: 'meta',
 			subtype: 'text',
-			text: 'text'
+			text: 'text',
 		};
 
 		rawNoteOnEvent = {
@@ -30,7 +30,7 @@ describe('Track', function () {
 			subtype: 'noteOn',
 			noteNumber: 60,
 			velocity: 10,
-			channel: 1
+			channel: 1,
 		};
 
 		rawNoteOffEvent = {
@@ -39,7 +39,7 @@ describe('Track', function () {
 			deltaTime: 60,
 			noteNumber: 60,
 			velocity: 10,
-			channel: 1
+			channel: 1,
 		};
 	});
 
@@ -117,9 +117,9 @@ describe('Track', function () {
 				type: 'channel',
 				channel: 0,
 				subtype: 'programChange',
-				value: 8
+				value: 8,
 			},
-			0
+			0,
 		);
 
 		expect(track.patch).toBe(8);

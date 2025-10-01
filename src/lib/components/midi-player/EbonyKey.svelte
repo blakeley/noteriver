@@ -3,13 +3,11 @@
 
 	let { x, pressed }: { x: number; pressed: number | undefined } = $props();
 
-	const fill = $derived(() => {
-		if (pressed !== undefined) {
-			return Keyboard.EBONY_KEY_COLORS[pressed % Keyboard.EBONY_KEY_COLORS.length];
-		} else {
-			return '#202020';
-		}
-	});
+	const fill = $derived(
+		pressed !== undefined
+			? Keyboard.EBONY_KEY_COLORS[pressed % Keyboard.EBONY_KEY_COLORS.length]
+			: '#202020',
+	);
 </script>
 
 <svg
@@ -21,13 +19,13 @@
 	height={Keyboard.EBONY_HEIGHT}
 >
 	<!-- background -->
-	<rect x="0" width="1" y=".020" height="5.5625" fill={fill()} />
+	<rect x="0" width="1" y="0" height="1000" {fill} />
 
 	<!-- left side -->
-	<rect x="-0.0625" width="0.1625" y="0" height="5.5625" fill="url(#gradient-ebony-key-side)" />
+	<rect x="-0.0625" width="0.1625" y="0" height="1000" fill="url(#gradient-ebony-key-side)" />
 
 	<!-- right side -->
-	<rect x="0.9" width="0.1625" y="0" height="5.5625" fill="url(#gradient-ebony-key-side)" />
+	<rect x="0.9" width="0.1625" y="0" height="1000" fill="url(#gradient-ebony-key-side)" />
 
 	<!-- front slope -->
 	<path
@@ -46,7 +44,7 @@
 		ry="0.2"
 		width="0.8"
 		y="0.8"
-		height="5"
+		height={5}
 		fill="url(#gradient-ebony-key-top)"
 	/>
 </svg>

@@ -20,7 +20,7 @@ export async function createSession(token: string, userId: string) {
 	const session: table.Session = {
 		id: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
+		expiresAt: new Date(Date.now() + DAY_IN_MS * 30),
 	};
 	await db.insert(table.sessions).values(session);
 	return session;
@@ -32,7 +32,7 @@ export async function validateSessionToken(token: string) {
 		.select({
 			// Adjust user table here to tweak returned data
 			user: { id: table.users.id, username: table.users.username },
-			session: table.sessions
+			session: table.sessions,
 		})
 		.from(table.sessions)
 		.innerJoin(table.users, eq(table.sessions.userId, table.users.id))
@@ -70,12 +70,12 @@ export async function invalidateSession(sessionId: string) {
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
 	event.cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
-		path: '/'
+		path: '/',
 	});
 }
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
 	event.cookies.delete(sessionCookieName, {
-		path: '/'
+		path: '/',
 	});
 }

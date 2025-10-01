@@ -28,7 +28,7 @@ import type {
 	ChannelAftertouchEvent,
 	PitchBendEvent,
 	UnknownChannelEvent,
-	RawEvent
+	RawEvent,
 } from './Event';
 
 export default class MidiReader {
@@ -90,70 +90,70 @@ export default class MidiReader {
 						deltaTime,
 						type,
 						subtype: 'sequenceNumber',
-						number: this.readInt(2)
+						number: this.readInt(2),
 					};
 				case 0x01:
 					return <TextEvent>{
 						deltaTime,
 						type,
 						subtype: 'text',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x02:
 					return <CopyrightNoticeEvent>{
 						deltaTime,
 						type,
 						subtype: 'copyrightNotice',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x03:
 					return <TrackNameEvent>{
 						deltaTime,
 						type,
 						subtype: 'trackName',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x04:
 					return <InstrumentNameEvent>{
 						deltaTime,
 						type,
 						subtype: 'instrumentName',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x05:
 					return <LyricsEvent>{
 						deltaTime,
 						type,
 						subtype: 'lyrics',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x06:
 					return <MarkerEvent>{
 						deltaTime,
 						type,
 						subtype: 'marker',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x07:
 					return <CuePointEvent>{
 						deltaTime,
 						type,
 						subtype: 'cuePoint',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x08:
 					return <ProgramNameEvent>{
 						deltaTime,
 						type,
 						subtype: 'programName',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x09:
 					return <DeviceNameEvent>{
 						deltaTime,
 						type,
 						subtype: 'deviceName',
-						text: this.read(length)
+						text: this.read(length),
 					};
 				case 0x20:
 					if (length !== 1)
@@ -163,18 +163,18 @@ export default class MidiReader {
 						deltaTime,
 						type,
 						subtype: 'channelPrefix',
-						channel: this.readInt(1)
+						channel: this.readInt(1),
 					};
 				case 0x21:
 					if (length !== 1)
 						throw new Error(
-							'Length for this channelPrefex event was ' + length + ', but must be 1'
+							'Length for this channelPrefex event was ' + length + ', but must be 1',
 						);
 					return <PortPrefixEvent>{
 						deltaTime,
 						type,
 						subtype: 'portPrefix',
-						port: this.readInt(1)
+						port: this.readInt(1),
 					};
 				case 0x2f:
 					if (length !== 0)
@@ -182,7 +182,7 @@ export default class MidiReader {
 					return <EndOfTrackEvent>{
 						deltaTime,
 						type,
-						subtype: 'endOfTrack'
+						subtype: 'endOfTrack',
 					};
 				case 0x51:
 					if (length !== 3)
@@ -191,7 +191,7 @@ export default class MidiReader {
 						deltaTime,
 						type,
 						subtype: 'setTempo',
-						microsecondsPerBeat: this.readInt(3)
+						microsecondsPerBeat: this.readInt(3),
 					};
 				case 0x54:
 					if (length !== 5)
@@ -201,7 +201,7 @@ export default class MidiReader {
 						0: 24,
 						1: 25,
 						2: 29.97,
-						3: 30
+						3: 30,
 					};
 
 					const hourByte = this.readInt(1);
@@ -214,7 +214,7 @@ export default class MidiReader {
 						minutes: this.readInt(1),
 						seconds: this.readInt(1),
 						frames: this.readInt(1),
-						subframes: this.readInt(1)
+						subframes: this.readInt(1),
 					};
 				case 0x58:
 					if (length !== 4)
@@ -226,7 +226,7 @@ export default class MidiReader {
 						numerator: this.readInt(1),
 						denominator: Math.pow(2, this.readInt(1)),
 						metronome: this.readInt(1),
-						thirtySeconds: this.readInt(1)
+						thirtySeconds: this.readInt(1),
 					};
 
 				case 0x59:
@@ -240,21 +240,21 @@ export default class MidiReader {
 						type,
 						subtype: 'keySignature',
 						key,
-						scale
+						scale,
 					};
 				case 0x7f:
 					return <SequencerSpecificEvent>{
 						deltaTime,
 						type,
 						subtype: 'sequencerSpecific',
-						data: this.read(length)
+						data: this.read(length),
 					};
 				default:
 					return <UnknownMetaEvent>{
 						deltaTime,
 						type,
 						subtype: 'unknown',
-						data: this.read(length)
+						data: this.read(length),
 					};
 			}
 		} else if (firstByte == 0xf0) {
@@ -262,7 +262,7 @@ export default class MidiReader {
 			return <SysExEvent>{
 				deltaTime,
 				type: 'sysEx',
-				data: this.read(length)
+				data: this.read(length),
 			};
 		} else {
 			let statusByte, dataByte1;
@@ -288,7 +288,7 @@ export default class MidiReader {
 						channel,
 						subtype: 'noteOff',
 						noteNumber: dataByte1,
-						velocity: this.readInt(1)
+						velocity: this.readInt(1),
 					};
 				case 0x9:
 					const velocity = this.readInt(1);
@@ -298,7 +298,7 @@ export default class MidiReader {
 						channel,
 						subtype: velocity === 0 ? 'noteOff' : 'noteOn',
 						noteNumber: dataByte1,
-						velocity: velocity
+						velocity: velocity,
 					};
 				case 0xa:
 					return <NoteAftertouchEvent>{
@@ -307,7 +307,7 @@ export default class MidiReader {
 						channel,
 						subtype: 'noteAftertouch',
 						noteNumber: dataByte1,
-						amount: this.readInt(1)
+						amount: this.readInt(1),
 					};
 				case 0xb:
 					return <ControllerEvent>{
@@ -316,7 +316,7 @@ export default class MidiReader {
 						channel,
 						subtype: 'controller',
 						controllerType: dataByte1,
-						value: this.readInt(1)
+						value: this.readInt(1),
 					};
 				case 0xc:
 					return <ProgramChangeEvent>{
@@ -324,7 +324,7 @@ export default class MidiReader {
 						type,
 						channel,
 						subtype: 'programChange',
-						value: dataByte1
+						value: dataByte1,
 					};
 				case 0xd:
 					return <ChannelAftertouchEvent>{
@@ -332,7 +332,7 @@ export default class MidiReader {
 						type,
 						channel,
 						subtype: 'channelAftertouch',
-						amount: dataByte1
+						amount: dataByte1,
 					};
 				case 0x0e:
 					return <PitchBendEvent>{
@@ -340,7 +340,7 @@ export default class MidiReader {
 						type,
 						channel,
 						subtype: 'pitchBend',
-						value: dataByte1 + (this.readInt(1) << 7)
+						value: dataByte1 + (this.readInt(1) << 7),
 					};
 				default:
 					return <UnknownChannelEvent>{
@@ -348,7 +348,7 @@ export default class MidiReader {
 						type,
 						channel,
 						subtype: 'unknown',
-						data: this.readInt(1)
+						data: this.readInt(1),
 					};
 			}
 		}
@@ -362,7 +362,7 @@ export default class MidiReader {
 		return {
 			type: type,
 			length: length,
-			data: data
+			data: data,
 		};
 	}
 

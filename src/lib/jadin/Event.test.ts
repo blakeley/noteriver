@@ -9,7 +9,7 @@ let textEvent: TextEvent = {
 	deltaTime: 50,
 	type: 'meta',
 	text: '~',
-	subtype: 'text'
+	subtype: 'text',
 };
 let event = new Event<TextEvent>(textEvent, track, 480);
 (track as any).addEvent(event);
