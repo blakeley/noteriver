@@ -6,51 +6,25 @@
 		Portal,
 		RoundedBoxGeometry,
 		InstancedMesh,
-		Instance
+		Instance,
 	} from '@threlte/extras';
 	import * as THREE from 'three';
 	import { ebonyKeyGeometry } from '$lib/midi-player/ebonyKeyGeometry';
+	import PerlinNoiseLine from '$lib/components/PerlinNoiseLine.svelte';
+	import PostProcessingLayer from '$lib/midi-player/PostProcessingLayer.svelte';
 
 	// Props for light control
 	let { lightX = 0, lightY = -100, lightZ = 200, lightIntensity = 1 } = $props();
+
+	// Set proper color management
+	// @ts-ignore - legacyMode exists but not in types
+	THREE.ColorManagement.legacyMode = false;
 
 	// Get viewport size and scene
 	const { size, scene } = useThrelte();
 
 	// Set scene background color
-	scene.background = new THREE.Color('#2c2c2c');
-
-	// Create anisotropy map for brushed metal effect
-	const createAnisotropyMap = () => {
-		const width = 256;
-		const height = 256;
-		const size = width * height;
-		const data = new Uint8Array(3 * size);
-
-		// Create vertical brushed pattern
-		for (let i = 0; i < size; i++) {
-			const x = i % width;
-			const y = Math.floor(i / width);
-
-			// Create vertical streaks with noise
-			const streak = Math.sin(x * 0.5) * 0.3 + 0.7;
-			const noise = (Math.random() - 0.5) * 0.1;
-			const value = Math.min(255, Math.max(0, (streak + noise) * 255));
-
-			data[i * 3] = value; // R
-			data[i * 3 + 1] = value; // G
-			data[i * 3 + 2] = value; // B
-		}
-
-		const texture = new THREE.DataTexture(data, width, height);
-		texture.needsUpdate = true;
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set(1, 4); // Stretch pattern vertically
-		return texture;
-	};
-
-	const anisotropyMap = createAnisotropyMap();
+	scene.background = new THREE.Color(0x111);
 
 	// Calculate actual keyboard dimensions
 	const firstKey = Keyboard.MIDI_NUMBERS[0];
@@ -70,7 +44,7 @@
 	const cameraPosition = $derived<[number, number, number]>([
 		viewportWidth / 2,
 		viewportHeight / 2,
-		100
+		100,
 	]);
 </script>
 
@@ -99,6 +73,24 @@
 		</Portal>
 	{/snippet}
 </T.DirectionalLight>
+
+<!-- Animated Perlin Noise Line at top of ivory keys - will glow with bloom -->
+<PerlinNoiseLine
+	position={[
+		viewportWidth / 2,
+		viewportHeight / 2 + (Keyboard.IVORY_HEIGHT / 2) * scale,
+		(Keyboard.EBONY_ELEVATION + Keyboard.EBONY_THICKNESS) * scale,
+	]}
+	length={viewportWidth}
+	color="hotpink"
+	points={500}
+	opacity={1.0}
+	linewidth={800}
+	spatialFrequency={1.0}
+	temporalFrequency={1.0}
+	amplitude={2.5}
+	octaves={2}
+/>
 
 <!-- Piano Keyboard Group -->
 <T.Group {scale} position={[-firstKey.x * scale, viewportHeight / 2, 0]}>
@@ -130,7 +122,7 @@
 				position={[
 					midiNumber.x + midiNumber.width / 2,
 					(Keyboard.IVORY_HEIGHT - Keyboard.EBONY_HEIGHT) / 2,
-					Keyboard.EBONY_ELEVATION
+					Keyboard.EBONY_ELEVATION,
 				]}
 				rotation={[0, 0, 0]}
 				scale={[midiNumber.width, Keyboard.EBONY_HEIGHT / 7.5, Keyboard.EBONY_THICKNESS]}
@@ -138,3 +130,6 @@
 		{/each}
 	</InstancedMesh>
 </T.Group>
+
+<!-- Post-processing bloom effect -->
+<PostProcessingLayer />
