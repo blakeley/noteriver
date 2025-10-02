@@ -27,6 +27,18 @@
 	<Canvas toneMapping={0}>
 		<T.OrthographicCamera position={cameraPosition} near={0} far={100} makeDefault />
 
+		<!-- Lighting for the keyboard -->
+		<T.AmbientLight intensity={0.5} />
+		<T.DirectionalLight
+			position={[playerState.width / 2, playerState.height / 2 - 100, 200]}
+			intensity={1}
+			color="white"
+		>
+			{#snippet children()}
+				<T.Object3D attach="target" position={[playerState.width / 2, playerState.height / 2, 0]} />
+			{/snippet}
+		</T.DirectionalLight>
+
 		<!-- Piano Roll Notes -->
 		<ThreltePianoNotes {scale} />
 
