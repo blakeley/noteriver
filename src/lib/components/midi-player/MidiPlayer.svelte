@@ -4,7 +4,8 @@
 	import { MidiNumber } from '$lib/midi-player/keyboard';
 	import { Synthesizer } from '$lib/midi-player/synthesizer';
 	import * as jadin from 'jadin';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import CanvasPianoRoll from './CanvasPianoRoll.svelte';
 	import PianoRollBackground from './PianoRollBackground.svelte';
 	import PlayerControls from './PlayerControls.svelte';
@@ -30,6 +31,7 @@
 		isPlaying: false,
 		isFullscreen: false,
 		loadedMidi: null as jadin.Midi | null,
+		midiPromise: null as Promise<jadin.Midi> | null,
 		scrollRatio: 0,
 		width: 1280,
 		height: 720,
@@ -132,23 +134,19 @@
 	});
 
 	// Handle fullscreen API when isFullscreen state changes
-	$effect(async () => {
+	$effect(() => {
 		const isCurrentlyFullscreen = !!document.fullscreenElement;
 
 		if (playerState.isFullscreen && !isCurrentlyFullscreen && playerContainer) {
-			try {
-				await playerContainer.requestFullscreen();
-			} catch (err) {
+			playerContainer.requestFullscreen().catch((err) => {
 				console.error('Error attempting to enable fullscreen:', err);
 				playerState.isFullscreen = false; // Revert on error
-			}
+			});
 		} else if (!playerState.isFullscreen && isCurrentlyFullscreen) {
-			try {
-				await document.exitFullscreen();
-			} catch (err) {
+			document.exitFullscreen().catch((err) => {
 				console.error('Error attempting to exit fullscreen:', err);
 				playerState.isFullscreen = true; // Revert on error
-			}
+			});
 		}
 	});
 
@@ -191,6 +189,11 @@
 
 	// Set the player context
 	setPlayerContext(playerState);
+
+	// Load MIDI on mount
+	onMount(() => {
+		playerState.midiPromise = loadMidiFromS3(s3key);
+	});
 </script>
 
 <div
@@ -205,32 +208,40 @@
 	<div
 		class="relative h-full w-full flex-1 overflow-hidden bg-[#2c2c2c] bg-[radial-gradient(circle_at_center_bottom,#2c2c2c_70%,#202020)]"
 	>
-		{#await loadMidiFromS3(s3key)}
+		{#if !browser || !playerState.midiPromise}
 			<div class="flex h-full items-center justify-center">
 				<div
 					class="h-8 w-8 animate-spin rounded-full border-2 border-gray-400 border-t-gray-200"
 				></div>
 			</div>
-		{:then midiFile}
-			{#if !thumbnail}
-				<ScrollOverlay />
-				<PlayPauseFlash />
-			{/if}
-			<PianoRollBackground />
-			{#if playerState.visualMode === 'canvas'}
-				<CanvasPianoRoll indexParity={true} />
-				<CanvasPianoRoll indexParity={false} />
-			{:else}
-				<ThreltePianoRoll />
-			{/if}
-			{#if !thumbnail}
-				<SvgKeyboard />
-				<PlayerControls />
-			{/if}
-		{:catch error}
-			<div class="flex h-full items-center justify-center">
-				<p class="text-red-500">Failed to load MIDI: {error?.message || error}</p>
-			</div>
-		{/await}
+		{:else}
+			{#await playerState.midiPromise}
+				<div class="flex h-full items-center justify-center">
+					<div
+						class="h-8 w-8 animate-spin rounded-full border-2 border-gray-400 border-t-gray-200"
+					></div>
+				</div>
+			{:then}
+				{#if !thumbnail}
+					<ScrollOverlay />
+					<PlayPauseFlash />
+				{/if}
+				<PianoRollBackground />
+				{#if playerState.visualMode === 'canvas'}
+					<CanvasPianoRoll indexParity={true} />
+					<CanvasPianoRoll indexParity={false} />
+				{:else}
+					<ThreltePianoRoll />
+				{/if}
+				{#if !thumbnail}
+					<SvgKeyboard />
+					<PlayerControls />
+				{/if}
+			{:catch error}
+				<div class="flex h-full items-center justify-center">
+					<p class="text-red-500">Failed to load MIDI: {error?.message || error}</p>
+				</div>
+			{/await}
+		{/if}
 	</div>
 </div>
