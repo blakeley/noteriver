@@ -259,11 +259,13 @@
 				{#if playerState.visualMode === 'canvas'}
 					<CanvasPianoRoll indexParity={true} />
 					<CanvasPianoRoll indexParity={false} />
+					{#if !thumbnail}
+						<SvgKeyboard />
+					{/if}
 				{:else}
 					<ThreltePianoRoll />
 				{/if}
 				{#if !thumbnail}
-					<SvgKeyboard />
 					<PlayerControls />
 				{/if}
 			{:catch error}
