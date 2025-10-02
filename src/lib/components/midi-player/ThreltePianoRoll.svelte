@@ -2,9 +2,8 @@
 	import { Canvas } from '@threlte/core';
 	import { T } from '@threlte/core';
 	import { getPlayerContext } from '$lib/midi-player/context';
-	import { Keyboard, MidiNumber } from '$lib/midi-player/keyboard';
+	import { Keyboard } from '$lib/midi-player/keyboard';
 	import ThreltePianoNote from './ThreltePianoNote.svelte';
-	import ThrelteKeyboard from '$lib/components/ThrelteKeyboard.svelte';
 
 	const playerState = getPlayerContext();
 
@@ -45,11 +44,5 @@
 				{/if}
 			</T.Group>
 		</T.Group>
-
-		<!-- Keyboard at the bottom of the viewport -->
-		<ThrelteKeyboard
-			{scale}
-			position={[-playerState.lowMidiNumber.x * scale, Keyboard.IVORY_HEIGHT / 2, 0]}
-		/>
 	</Canvas>
 </div>

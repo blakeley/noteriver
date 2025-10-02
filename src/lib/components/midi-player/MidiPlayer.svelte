@@ -13,6 +13,7 @@
 	import ScrollOverlay from './ScrollOverlay.svelte';
 	import SvgKeyboard from './SvgKeyboard.svelte';
 	import ThreltePianoRoll from './ThreltePianoRoll.svelte';
+	import ThrelteKeyboardLayer from './ThrelteKeyboardLayer.svelte';
 
 	let {
 		s3key,
@@ -264,6 +265,9 @@
 					{/if}
 				{:else}
 					<ThreltePianoRoll />
+					{#if !thumbnail}
+						<ThrelteKeyboardLayer />
+					{/if}
 				{/if}
 				{#if !thumbnail}
 					<PlayerControls />
