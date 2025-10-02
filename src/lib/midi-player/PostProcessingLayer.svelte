@@ -5,6 +5,7 @@
 	import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 	import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 	import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+	import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 
 	const { scene, renderer, camera, size, renderStage, autoRender } = useThrelte();
 
@@ -29,6 +30,10 @@
 
 		// Setup composer with target
 		composer.addPass(new RenderPass(scene, camera.current));
+
+		// Add SMAA for anti-aliasing
+		const smaaPass = new SMAAPass(size.current.width, size.current.height);
+		composer.addPass(smaaPass);
 
 		// Threshold is 1, nothing will glow by default
 		composer.addPass(bloomPass);
