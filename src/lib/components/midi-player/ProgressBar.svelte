@@ -57,10 +57,11 @@
 
 <svelte:document onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 
+<!-- Container for larger hitbox -->
 <div
 	bind:this={progressBarEl}
 	tabindex="0"
-	class="absolute right-4 bottom-full left-4 h-1 cursor-pointer rounded-full bg-white/75 transition-all hover:h-1.5"
+	class="group absolute right-4 bottom-full left-4 h-4 cursor-pointer"
 	class:cursor-grabbing={isDragging}
 	onmousedown={handleMouseDown}
 	role="slider"
@@ -69,15 +70,20 @@
 	aria-valuemin={0}
 	aria-valuemax={100}
 >
-	<!-- Progress Fill -->
+	<!-- Visual progress bar positioned at bottom -->
 	<div
-		class="pointer-events-none absolute top-0 left-0 h-full rounded-full bg-primary-500"
-		style="width: {progressPercent}%"
+		class="absolute right-0 bottom-0 left-0 h-1 rounded-full bg-white/75 transition-all group-hover:h-1.5"
 	>
-		<!-- Progress Circle Indicator -->
+		<!-- Progress Fill -->
 		<div
-			class="absolute top-1/2 -right-1.5 h-4 w-4 -translate-y-1/2 cursor-pointer rounded-full bg-primary-500 shadow-md transition-transform"
-			class:scale-125={isDragging}
-		></div>
+			class="pointer-events-none absolute top-0 left-0 h-full rounded-full bg-primary-500"
+			style="width: {progressPercent}%"
+		>
+			<!-- Progress Circle Indicator -->
+			<div
+				class="absolute top-1/2 -right-1.5 h-4 w-4 -translate-y-1/2 cursor-pointer rounded-full bg-primary-500 shadow-md transition-transform"
+				class:scale-125={isDragging}
+			></div>
+		</div>
 	</div>
 </div>
