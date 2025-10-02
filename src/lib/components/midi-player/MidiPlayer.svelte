@@ -24,6 +24,11 @@
 
 	let playerContainer: HTMLDivElement;
 
+	let initialPositionSecond = 0;
+	let initialDateNow = 0;
+	let requestedAnimationFrame = 0;
+	let timeoutId: number | NodeJS.Timeout = 0;
+
 	// Create reactive state object for context - single $state with all properties
 	const playerState = $state({
 		time: thumbnail ? THUMBNAIL_INITIAL_TIME : PLAYER_INITIAL_TIME_OFFSET,
@@ -40,15 +45,14 @@
 		lowMidiNumber: new MidiNumber(21),
 		highMidiNumber: new MidiNumber(108),
 		timeScale: 10, // Number of ivory key widths in one second of piano roll
-		togglePlayPause: () => togglePlayPause(),
 		visualMode: 'threlte' as 'threlte' | 'canvas',
+		play,
+		pause,
+		seek,
+		togglePlayPause,
 	});
 
-	let initialPositionSecond = 0;
-	let initialDateNow = 0;
 	const audioCursor = $derived(playerState.loadedMidi?.newCursor());
-	let requestedAnimationFrame = 0;
-	let timeoutId: number | NodeJS.Timeout = 0;
 
 	// Function to load MIDI from S3
 	async function loadMidiFromS3(key: string): Promise<jadin.Midi> {
@@ -150,18 +154,43 @@
 		}
 	});
 
+	function play() {
+		if (!playerState.loadedMidi || playerState.isPlaying) return;
+
+		initialPositionSecond = playerState.time;
+		initialDateNow = Date.now();
+		audioCursor?.backward(playerState.time);
+		audioCursor?.forward(playerState.time);
+		playerState.isPlaying = true;
+		sonate();
+		animate();
+	}
+
+	function pause() {
+		if (!playerState.isPlaying) return;
+
+		playerState.isPlaying = false;
+		Synthesizer.getInstance().stopAudio();
+	}
+
+	function seek(newTime: number) {
+		playerState.time = newTime;
+
+		// If currently playing, update the playback reference points
+		if (playerState.isPlaying) {
+			initialPositionSecond = newTime;
+			initialDateNow = Date.now();
+			// Reposition the audio cursor
+			audioCursor?.backward(newTime);
+			audioCursor?.forward(newTime);
+		}
+	}
+
 	function togglePlayPause() {
 		if (playerState.isPlaying) {
-			playerState.isPlaying = false;
-			Synthesizer.getInstance().stopAudio();
+			pause();
 		} else {
-			initialPositionSecond = playerState.time;
-			initialDateNow = Date.now();
-			audioCursor?.backward(playerState.time);
-			audioCursor?.forward(playerState.time);
-			playerState.isPlaying = true;
-			sonate();
-			animate();
+			play();
 		}
 	}
 
@@ -176,7 +205,7 @@
 		// Reset time to 0 on '0' key
 		if (event.key === '0') {
 			event.preventDefault();
-			playerState.time = 0;
+			seek(0);
 		}
 	}
 

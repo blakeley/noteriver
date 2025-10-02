@@ -5,6 +5,7 @@
 	const playerState = getPlayerContext();
 
 	let isDragging = $state(false);
+	let wasPlaying = $state(playerState.isPlaying);
 	let progressBarEl: HTMLElement;
 
 	// Progress bar shows range from initial offset to duration + 1
@@ -25,11 +26,14 @@
 		const clickX = clientX - rect.left;
 		const clickPercent = clickX / rect.width;
 		// Map from 0-1 range to initial offset to duration+1 range
-		playerState.time = clickPercent * totalRange + PLAYER_INITIAL_TIME_OFFSET;
+		const newTime = clickPercent * totalRange + PLAYER_INITIAL_TIME_OFFSET;
+		playerState.seek(newTime);
 	}
 
 	function handleMouseDown(event: MouseEvent) {
 		isDragging = true;
+		wasPlaying = playerState.isPlaying;
+		playerState.pause();
 		updateTimeFromPosition(event.clientX);
 
 		// Prevent text selection while dragging
@@ -38,12 +42,16 @@
 
 	function handleMouseMove(event: MouseEvent) {
 		if (!isDragging) return;
+
 		updateTimeFromPosition(event.clientX);
 	}
 
 	function handleMouseUp() {
 		if (!isDragging) return;
 		isDragging = false;
+		if (wasPlaying) {
+			playerState.play();
+		}
 	}
 </script>
 

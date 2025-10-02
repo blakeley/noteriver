@@ -16,6 +16,9 @@ export interface PlayerState {
 	lowMidiNumber: MidiNumber;
 	highMidiNumber: MidiNumber;
 	timeScale: number;
+	play: () => void;
+	pause: () => void;
+	seek: (newTime: number) => void;
 	togglePlayPause: () => void;
 	visualMode: 'canvas' | 'threlte';
 }
