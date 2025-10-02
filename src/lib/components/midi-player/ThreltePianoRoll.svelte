@@ -4,6 +4,7 @@
 	import { getPlayerContext } from '$lib/midi-player/context';
 	import { Keyboard } from '$lib/midi-player/keyboard';
 	import ThreltePianoNote from './ThreltePianoNote.svelte';
+	import ThrelteKeyboard from '$lib/components/ThrelteKeyboard.svelte';
 
 	const playerState = getPlayerContext();
 
@@ -25,6 +26,7 @@
 	<Canvas toneMapping={0}>
 		<T.OrthographicCamera position={cameraPosition} near={0} far={100} makeDefault />
 
+		<!-- Piano Roll Notes -->
 		<T.Group scale={[scale, -scale, 1]}>
 			<T.Group
 				position={[
@@ -44,5 +46,11 @@
 				{/if}
 			</T.Group>
 		</T.Group>
+
+		<!-- Keyboard at the bottom -->
+		<ThrelteKeyboard
+			{scale}
+			position={[-playerState.lowMidiNumber.x * scale, (Keyboard.IVORY_HEIGHT / 2) * scale, 0]}
+		/>
 	</Canvas>
 </div>
