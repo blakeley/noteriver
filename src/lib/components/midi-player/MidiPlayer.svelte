@@ -12,7 +12,7 @@
 	import PlayPauseFlash from './PlayPauseFlash.svelte';
 	import ScrollOverlay from './ScrollOverlay.svelte';
 	import SvgKeyboard from './SvgKeyboard.svelte';
-	import ThreltePianoRoll from './ThreltePianoRoll.svelte';
+	import ThrelteCanvas from './ThrelteCanvas.svelte';
 
 	let {
 		s3key,
@@ -263,7 +263,7 @@
 						<SvgKeyboard />
 					{/if}
 				{:else}
-					<ThreltePianoRoll />
+					<ThrelteCanvas {thumbnail} />
 				{/if}
 				{#if !thumbnail}
 					<PlayerControls />

@@ -6,14 +6,14 @@
 	import { ebonyKeyGeometry } from '$lib/midi-player/ebonyKeyGeometry';
 
 	// Props - using T.Group's prop types
-	let { scale = 1, position = [0, 0, 0] }: Props<THREE.Group> = $props();
+	const props: Props<THREE.Group> = $props();
 
 	// Calculate keyboard offset
 	const firstKey = Keyboard.MIDI_NUMBERS[0];
 	if (!firstKey) throw new Error('No first key');
 </script>
 
-<T.Group {scale} {position}>
+<T.Group {...props}>
 	<!-- Ivory Keys -->
 	{#each Keyboard.IVORY_MIDI_NUMBERS as midiNumber}
 		<T.Mesh position={[midiNumber.x + midiNumber.width / 2, 0, 0]}>
