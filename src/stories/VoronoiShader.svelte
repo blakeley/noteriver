@@ -1,19 +1,30 @@
 <script lang="ts">
-	import { T } from '@threlte/core';
+	import { T, useTask } from '@threlte/core';
 	import { OrbitControls, Grid } from '@threlte/extras';
 	import * as THREE from 'three';
-	import fragmentShader from '$lib/shaders/basic.frag.glsl?raw';
+	import fragmentShader from '$lib/shaders/voronoi.frag.glsl?raw';
 	import vertexShader from '$lib/shaders/basic.vert.glsl?raw';
 
-	let { color = '#ff6b6b', geometry = 'circle' } = $props<{
+	let {
+		color = '#4a90e2',
+		geometry = 'circle',
+		cells = 5.0,
+	} = $props<{
 		color?: string;
 		geometry?: 'plane' | 'circle';
+		cells?: number;
 	}>();
 
 	const colorObject = $derived(new THREE.Color(color));
 	const geo = $derived(
 		geometry === 'circle' ? new THREE.CircleGeometry(2, 32) : new THREE.PlaneGeometry(4, 4, 32, 32),
 	);
+
+	let time = $state(0);
+
+	useTask((delta) => {
+		time += delta;
+	});
 </script>
 
 <T.PerspectiveCamera makeDefault position={[0, 0, 5]}>
@@ -26,7 +37,11 @@
 		{fragmentShader}
 		uniforms={{
 			uColor: { value: new THREE.Color() },
+			uCells: { value: 0 },
+			uTime: { value: 0 },
 		}}
 		uniforms.uColor.value={colorObject}
+		uniforms.uCells.value={cells}
+		uniforms.uTime.value={time}
 	/>
 </T.Mesh>
