@@ -16,7 +16,7 @@
 <T.Group {...props}>
 	<!-- Ivory Keys -->
 	{#each Keyboard.IVORY_MIDI_NUMBERS as midiNumber}
-		<T.Mesh position={[midiNumber.x + midiNumber.width / 2, 0, 0]}>
+		<T.Mesh position={[midiNumber.x + midiNumber.width / 2, 0, 0]} receiveShadow>
 			<RoundedBoxGeometry
 				args={[midiNumber.width * 0.95, Keyboard.IVORY_HEIGHT, Keyboard.IVORY_THICKNESS]}
 				radius={midiNumber.width * 0.95 * 0.1}
@@ -27,7 +27,7 @@
 	{/each}
 
 	<!-- Ebony Keys InstancedMesh -->
-	<InstancedMesh geometry={ebonyKeyGeometry}>
+	<InstancedMesh geometry={ebonyKeyGeometry} castShadow>
 		<T.MeshPhysicalMaterial
 			color={Keyboard.EBONY_KEY_COLOR}
 			roughness={0.5}

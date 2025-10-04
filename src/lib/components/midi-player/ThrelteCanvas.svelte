@@ -25,19 +25,29 @@
 
 <div class="absolute h-full w-full">
 	<Canvas toneMapping={0}>
-		<T.OrthographicCamera position={cameraPosition} near={0} far={100} makeDefault />
+		<T.OrthographicCamera
+			position={cameraPosition}
+			left={0}
+			right={playerState.width}
+			top={playerState.height}
+			bottom={0}
+			near={0}
+			far={100}
+			makeDefault
+		/>
 
 		<!-- Lighting for the keyboard -->
-		<T.AmbientLight intensity={0.5} />
+		<T.AmbientLight intensity={1} />
 		<T.DirectionalLight
-			position={[playerState.width / 2, playerState.height / 2 - 100, 200]}
-			intensity={1}
+			position={[
+				0,
+				playerState.height,
+				Keyboard.IVORY_THICKNESS + playerState.highMidiNumber.x / 2,
+			]}
+			intensity={20}
+			castShadow
 			color="white"
-		>
-			{#snippet children()}
-				<T.Object3D attach="target" position={[playerState.width / 2, playerState.height / 2, 0]} />
-			{/snippet}
-		</T.DirectionalLight>
+		></T.DirectionalLight>
 
 		<!-- Piano Roll Notes -->
 		<ThreltePianoNotes {scale} />

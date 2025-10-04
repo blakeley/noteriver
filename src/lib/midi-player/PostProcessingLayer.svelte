@@ -27,6 +27,8 @@
 		// Configure renderer
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 		renderer.toneMapping = THREE.ACESFilmicToneMapping;
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		// Setup composer with target
 		composer.addPass(new RenderPass(scene, camera.current));
