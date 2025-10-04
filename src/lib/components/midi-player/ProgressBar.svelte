@@ -71,15 +71,15 @@
 	aria-valuemax={100}
 >
 	<!-- Visual progress bar -->
-	<div class="relative h-1 w-full rounded-full bg-white/30 transition-all group-hover:h-1.5">
+	<div class="relative h-1 w-full rounded-full bg-white/50 transition-all group-hover:h-1.5">
 		<!-- Progress Fill -->
 		<div
 			class="pointer-events-none absolute top-0 left-0 h-full rounded-full bg-primary-500"
-			style="width: {progressPercent}%"
+			style:width={`${progressPercent}%`}
 		>
 			<!-- Progress Circle Indicator -->
 			<div
-				class="absolute top-1/2 -right-1.5 h-3 w-3 -translate-y-1/2 cursor-pointer rounded-full bg-primary-500 shadow-md transition-transform"
+				class="absolute top-1/2 -right-1.5 h-4 w-4 -translate-y-1/2 cursor-pointer rounded-full bg-primary-500 shadow-md transition-transform"
 				class:scale-125={isDragging}
 			></div>
 		</div>
