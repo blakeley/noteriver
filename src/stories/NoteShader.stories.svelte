@@ -40,9 +40,9 @@
 		height: 300,
 		bottomColor: '#deb4e2',
 		topColor: '#8fc0fb',
-		borderBlend: 0.6,
+		borderBlend: 0.75,
 		borderRadius: 4,
-		borderWidth: 4,
+		borderWidth: 2,
 	}}
 	decorators={[
 		// @ts-expect-error Bug in Storybook

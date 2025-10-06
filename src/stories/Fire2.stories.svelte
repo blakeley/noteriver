@@ -14,13 +14,16 @@
 			width: {
 				control: { type: 'range', min: 1, max: 10, step: 0.1 },
 			},
+			height: {
+				control: { type: 'range', min: 1, max: 10, step: 0.1 },
+			},
 		},
 	});
 </script>
 
 <Story
 	name="Default"
-	args={{ heightPoint: 0.5, width: 4 }}
+	args={{ heightPoint: 0.3, width: 4, height: 4 }}
 	decorators={[
 		// @ts-expect-error Bug in Storybook
 		() => StorybookCanvas,

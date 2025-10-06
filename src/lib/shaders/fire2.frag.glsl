@@ -1,6 +1,8 @@
 precision mediump float;
 
 uniform float uTime;
+uniform float uWidth;
+uniform float uHeight;
 uniform float uHeightPoints[10];
 uniform int uHeightPointCount;
 varying vec2 vUv;
@@ -26,7 +28,8 @@ float fire(vec2 n) {
 
 void main() {
 	float t = uTime;
-	vec2 uv = vUv * 5.0;
+	// Convert to pixel/world space to prevent stretching
+	vec2 uv = vUv * vec2(uWidth, uHeight);
 	uv.y += 0.5;
 
 	// Make fire taller at multiple height points, smoothly transitioning +/- 0.05
@@ -52,7 +55,7 @@ void main() {
 
 	float grad = pow((r.y + r.y) * max(.0, uv.y) + .1, 4.0);
 	color = ramp(grad);
-	color /= (1.50 + max(vec3(0), color));
+	color /= (2.50 + max(vec3(0), color));
 
 	float brightness = (color.r + color.g + color.b) / 3.0;
 	gl_FragColor = vec4(color, brightness);

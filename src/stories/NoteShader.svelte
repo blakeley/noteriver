@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { T } from '@threlte/core';
+	import { T, useTask } from '@threlte/core';
 	import { OrbitControls } from '@threlte/extras';
 	import * as THREE from 'three';
 	import fragmentShader from '$lib/shaders/note.frag.glsl?raw';
@@ -10,9 +10,9 @@
 		height = 300,
 		bottomColor = '#deb4e2',
 		topColor = '#8fc0fb',
-		borderBlend = 0.6,
+		borderBlend = 0.75,
 		borderRadius = 4,
-		borderWidth = 4,
+		borderWidth = 2,
 	} = $props<{
 		width?: number;
 		height?: number;
@@ -33,6 +33,13 @@
 	const fov = 50; // degrees
 	const visibleHeight = 400; // pixels
 	const cameraDistance = visibleHeight / (2 * Math.tan((fov * Math.PI) / 180 / 2));
+
+	// Time for animation
+	let time = $state(0);
+
+	useTask((delta) => {
+		time += delta;
+	});
 </script>
 
 <T.PerspectiveCamera makeDefault {fov} position={[0, 0, cameraDistance]}>
@@ -48,9 +55,10 @@
 			uHeight: { value: 100 },
 			uBottomColor: { value: new THREE.Color() },
 			uTopColor: { value: new THREE.Color() },
-			uBorderBlend: { value: 0.6 },
+			uBorderBlend: { value: 0.75 },
 			uBorderRadius: { value: 4 },
-			uBorderWidth: { value: 4 },
+			uBorderWidth: { value: 2 },
+			uTime: { value: 0 },
 		}}
 		uniforms.uWidth.value={width}
 		uniforms.uHeight.value={height}
@@ -59,6 +67,7 @@
 		uniforms.uBorderBlend.value={borderBlend}
 		uniforms.uBorderRadius.value={borderRadius}
 		uniforms.uBorderWidth.value={borderWidth}
+		uniforms.uTime.value={time}
 		transparent={true}
 	/>
 </T.Mesh>

@@ -5,9 +5,14 @@
 	import fragmentShader from '$lib/shaders/fire2.frag.glsl?raw';
 	import vertexShader from '$lib/shaders/basic.vert.glsl?raw';
 
-	let { heightPoint = 0.5, width = 4 } = $props<{
+	let {
+		heightPoint = 0.3,
+		width = 4,
+		height = 4,
+	} = $props<{
 		heightPoint?: number;
 		width?: number;
+		height?: number;
 	}>();
 
 	const heightPoints = $derived([heightPoint, 0.5]);
@@ -16,8 +21,8 @@
 		...new Array(10 - heightPoints.length).fill(0),
 	]);
 
-	const geometry = $derived(new THREE.PlaneGeometry(width, 4, 32, 32));
-	const borderGeometry = $derived(new THREE.PlaneGeometry(width, 4));
+	const geometry = $derived(new THREE.PlaneGeometry(width, height, 32, 32));
+	const borderGeometry = $derived(new THREE.PlaneGeometry(width, height));
 
 	let time = $state(0);
 
@@ -36,10 +41,14 @@
 		{fragmentShader}
 		uniforms={{
 			uTime: { value: 0 },
+			uWidth: { value: 4 },
+			uHeight: { value: 4 },
 			uHeightPoints: { value: new Array(10).fill(0) },
 			uHeightPointCount: { value: 0 },
 		}}
 		uniforms.uTime.value={time}
+		uniforms.uWidth.value={width}
+		uniforms.uHeight.value={height}
 		uniforms.uHeightPoints.value={heightPointsPadded}
 		uniforms.uHeightPointCount.value={heightPoints.length}
 		transparent={true}
