@@ -13,6 +13,8 @@
 		borderBlend = 0.75,
 		borderRadius = 4,
 		borderWidth = 2,
+		offsetU = 0,
+		offsetV = 0,
 	} = $props<{
 		width?: number;
 		height?: number;
@@ -21,6 +23,8 @@
 		borderBlend?: number;
 		borderRadius?: number;
 		borderWidth?: number;
+		offsetU?: number;
+		offsetV?: number;
 	}>();
 
 	// Geometry dimensions in pixels (1 unit = 1 pixel)
@@ -46,7 +50,7 @@
 	<OrbitControls enableDamping />
 </T.PerspectiveCamera>
 
-<T.Mesh geometry={geo}>
+<T.Mesh geometry={geo} position={[offsetU * 100, offsetV * 100, 0]}>
 	<T.ShaderMaterial
 		{vertexShader}
 		{fragmentShader}
@@ -59,6 +63,8 @@
 			uBorderRadius: { value: 4 },
 			uBorderWidth: { value: 2 },
 			uTime: { value: 0 },
+			uOffsetU: { value: 0 },
+			uOffsetV: { value: 0 },
 		}}
 		uniforms.uWidth.value={width}
 		uniforms.uHeight.value={height}
@@ -68,6 +74,8 @@
 		uniforms.uBorderRadius.value={borderRadius}
 		uniforms.uBorderWidth.value={borderWidth}
 		uniforms.uTime.value={time}
+		uniforms.uOffsetU.value={offsetU * 100}
+		uniforms.uOffsetV.value={offsetV * 100}
 		transparent={true}
 	/>
 </T.Mesh>

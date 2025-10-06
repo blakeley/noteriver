@@ -1,5 +1,6 @@
 #define TAU 6.28318530718
 #define MAX_ITER 5
+#define PATTERN_REPEAT 256.0
 
 uniform float uWidth;
 uniform float uHeight;
@@ -9,6 +10,8 @@ uniform float uBorderBlend;
 uniform float uBorderRadius;
 uniform float uBorderWidth;
 uniform float uTime;
+uniform float uOffsetU;
+uniform float uOffsetV;
 varying vec2 vUv;
 
 // Rounded rectangle SDF
@@ -61,12 +64,12 @@ void main() {
 	// Gradient from bottom to top
 	vec3 gradientFill = mix(uBottomColor, uTopColor, vUv.y);
 
-	// Apply water caustic effect in pixel space
+	// Apply water caustic effect as a fixed pattern in world space
 	float time = uTime * 0.5 + 23.0;
-	vec2 pixelPos = vUv * vec2(uWidth, uHeight);
-	// Normalize by the larger dimension to preserve aspect ratio
-	float maxDim = max(uWidth, uHeight);
-	vec2 uv = pixelPos / maxDim;
+	// Calculate absolute world pixel coordinates (centered on mesh, then offset by world position)
+	vec2 worldCoord = (vUv - 0.5) * vec2(uWidth, uHeight) + vec2(uOffsetU, uOffsetV);
+	// Sample caustic pattern with fixed repeat size - pattern repeats every 256 pixels
+	vec2 uv = worldCoord / PATTERN_REPEAT;
 	vec3 causticIntensity = waterCaustic(uv, time);
 
 	// Add caustic to gradient

@@ -29,6 +29,12 @@
 			borderWidth: {
 				control: { type: 'range', min: 0, max: 16, step: 1 },
 			},
+			offsetU: {
+				control: { type: 'range', min: -2, max: 2, step: 0.01 },
+			},
+			offsetV: {
+				control: { type: 'range', min: -2, max: 2, step: 0.01 },
+			},
 		},
 	});
 </script>
@@ -43,6 +49,8 @@
 		borderBlend: 0.75,
 		borderRadius: 4,
 		borderWidth: 2,
+		offsetU: 0,
+		offsetV: 0,
 	}}
 	decorators={[
 		// @ts-expect-error Bug in Storybook
