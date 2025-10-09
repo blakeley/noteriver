@@ -31,12 +31,17 @@
 		return active;
 	});
 
-	// Calculate keyboard offset
-	const firstKey = Keyboard.MIDI_NUMBERS[0];
-	if (!firstKey) throw new Error('No first key');
+	const keyboardWidth = Keyboard.LAST_KEY.x + Keyboard.LAST_KEY.width - Keyboard.FIRST_KEY.x;
+	const keyboardCenterX = Keyboard.FIRST_KEY.x + keyboardWidth / 2;
 </script>
 
 <T.Group {...props}>
+	<T.Mesh
+		position={[keyboardCenterX, -Keyboard.IVORY_WIDTH * 0.95 * 0.1, Keyboard.IVORY_THICKNESS / 8]}
+	>
+		<T.PlaneGeometry args={[keyboardWidth, Keyboard.IVORY_HEIGHT]} />
+		<T.MeshBasicMaterial color={0x000000} />
+	</T.Mesh>
 	<!-- Ivory Keys -->
 	{#each Keyboard.IVORY_MIDI_NUMBERS as midiNumber}
 		{@const trackIndex = activeNotes().get(midiNumber.number)}

@@ -50,7 +50,7 @@ export class Keyboard {
 	static EBONY_WIDTH = 14 / 24;
 	static IVORY_HEIGHT = Keyboard.IVORY_WIDTH * 6.5;
 	static EBONY_HEIGHT = Keyboard.EBONY_WIDTH * 6.5;
-	static IVORY_THICKNESS = 20 / 24;
+	static readonly IVORY_THICKNESS = 20 / 24;
 	static EBONY_THICKNESS = 11.5 / 24;
 	static EBONY_ELEVATION = 10 / 24;
 	static OFFSETS = [0, 15, 24, 44, 48, 72, 85, 96, 113, 120, 141, 144].map((offset) => offset / 24);
@@ -70,4 +70,6 @@ export class Keyboard {
 	static EBONY_MIDI_NUMBERS = Keyboard.MIDI_NUMBERS.filter((midiNumber) => midiNumber.isEbony);
 	static C_MIDI_NUMBERS = Keyboard.MIDI_NUMBERS.filter((midiNumber) => midiNumber.isC);
 	static F_MIDI_NUMBERS = Keyboard.MIDI_NUMBERS.filter((midiNumber) => midiNumber.isF);
+	static readonly FIRST_KEY = Keyboard.MIDI_NUMBERS[0]!;
+	static readonly LAST_KEY = Keyboard.MIDI_NUMBERS[Keyboard.MIDI_NUMBERS.length - 1]!;
 }
