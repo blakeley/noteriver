@@ -3,14 +3,17 @@
 	import AuthenticationButtons from './AuthenticationButtons.svelte';
 </script>
 
-<header class="z-10 bg-white shadow-md shadow-black/20">
+<header class="z-10 bg-white px-4 shadow-md shadow-black/20">
 	<div class="flex h-16 items-center">
-		<a href="/midis" class="flex h-full items-center px-4 transition-opacity hover:bg-neutral-100">
+		<a
+			href="/midis"
+			class="-ml-4 flex h-full items-center px-4 transition-opacity hover:bg-neutral-100"
+		>
 			<img src="/logo.svg" alt="NoteRiver Logo" class="h-10 w-10" />
 			<img src="/product.svg" alt="NoteRiver" class="ml-[5px] h-6 pb-1" />
 		</a>
 
-		<div class="mx-4 max-w-2xl flex-1">
+		<div class="mx-4 flex-1">
 			<SearchBox />
 		</div>
 

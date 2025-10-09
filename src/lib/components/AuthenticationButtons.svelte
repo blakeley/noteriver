@@ -1,19 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import AuthenticationDialog from './AuthenticationDialog.svelte';
 	import AvatarFallback from './AvatarFallback.svelte';
 
 	const user = $derived(page.data.user);
-
-	let showAuthDialog = $state(false);
-
-	function openLoginDialog() {
-		showAuthDialog = true;
-	}
-
-	function openSignupDialog() {
-		showAuthDialog = true;
-	}
 </script>
 
 {#if user}
@@ -36,19 +25,14 @@
 	</div>
 {:else}
 	<div class="flex items-center space-x-2">
-		<button
-			onclick={openLoginDialog}
-			class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-		>
+		<a href="/login" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
 			Login
-		</button>
-		<button
-			onclick={openSignupDialog}
+		</a>
+		<a
+			href="/signup"
 			class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"
 		>
 			Sign Up
-		</button>
+		</a>
 	</div>
 {/if}
-
-<AuthenticationDialog open={showAuthDialog} onClose={() => (showAuthDialog = false)} />

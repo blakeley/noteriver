@@ -17,7 +17,7 @@
 	}
 </script>
 
-<form on:submit={handleSubmit} class="w-full">
+<form on:submit={handleSubmit} class="mx-auto w-full max-w-2xl">
 	<div class="relative">
 		<input
 			type="text"
