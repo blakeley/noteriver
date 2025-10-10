@@ -67,22 +67,20 @@
 
 					<button
 						type="submit"
-						class="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 w-full items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+						class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white shadow-md shadow-primary-500/20 transition-colors hover:bg-primary-600 hover:shadow-primary-600/20 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:outline-none cursor-pointer disabled:pointer-events-none disabled:opacity-50"
 					>
 						Login
 					</button>
 
-					<div class="flex items-center text-sm">
-						<span
-							class="text-muted-foreground before:border-border px-4 before:flex-1 before:border-t before:content-['']"
-							>Or continue with</span
-						>
-						<div class="border-border flex-1 border-t"></div>
+					<div class="flex flex-nowrap items-center justify-start text-sm">
+						<div class="border-border flex-auto border-t"></div>
+						<span class="text-muted-foreground flex-none px-4">Or continue with</span>
+						<div class="border-border flex-auto border-t"></div>
 					</div>
 
 					<button
 						type="button"
-						class="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium whitespace-nowrap shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+						class="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium whitespace-nowrap shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none cursor-pointer disabled:pointer-events-none disabled:opacity-50"
 					>
 						<GoogleLogo class="size-4" />
 						Sign in with Google

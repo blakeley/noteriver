@@ -25,6 +25,15 @@ export const sessions = pgTable('sessions', {
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
 });
 
+export const verificationCodes = pgTable('verification_codes', {
+	id: text('id').primaryKey(),
+	email: text('email').notNull(),
+	code: text('code').notNull(),
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	attempts: integer('attempts').notNull().default(0),
+});
+
 export const midis = pgTable('midis', {
 	id: serial('id').primaryKey(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
@@ -119,3 +128,4 @@ export type User = typeof users.$inferSelect;
 export type Midi = typeof midis.$inferSelect;
 export type Favorite = typeof favorites.$inferSelect;
 export type Comment = typeof comments.$inferSelect;
+export type VerificationCode = typeof verificationCodes.$inferSelect;
