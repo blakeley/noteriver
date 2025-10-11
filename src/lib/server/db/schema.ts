@@ -14,7 +14,8 @@ export const users = pgTable('users', {
 	age: integer('age'),
 	username: text('username').notNull().unique(),
 	email: text('email').notNull().unique(),
-	passwordHash: text('password_hash').notNull(),
+	passwordHash: text('password_hash'),
+	googleId: text('google_id').unique(),
 });
 
 export const sessions = pgTable('sessions', {

@@ -90,7 +90,7 @@
 
 						<button
 							type="submit"
-							class="inline-flex h-9 w-full items-center justify-center rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-600 focus-visible:ring-1 focus-visible:ring-primary-500 focus-visible:outline-none cursor-pointer disabled:pointer-events-none disabled:opacity-50"
+							class="inline-flex h-9 w-full cursor-pointer items-center justify-center rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-600 focus-visible:ring-1 focus-visible:ring-primary-500 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
 						>
 							Continue
 						</button>
@@ -101,13 +101,13 @@
 							<div class="border-border flex-auto border-t"></div>
 						</div>
 
-						<button
-							type="button"
-							class="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none cursor-pointer disabled:pointer-events-none disabled:opacity-50"
+						<a
+							href="/login/google"
+							class="focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
 						>
 							<GoogleLogo class="size-4" />
 							Sign up with Google
-						</button>
+						</a>
 
 						<p class="text-center text-sm">
 							Already have an account?{' '}
@@ -155,7 +155,7 @@
 
 							<button
 								type="submit"
-								class="inline-flex h-9 w-full items-center justify-center rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-600 focus-visible:ring-1 focus-visible:ring-primary-500 focus-visible:outline-none cursor-pointer disabled:pointer-events-none disabled:opacity-50"
+								class="inline-flex h-9 w-full cursor-pointer items-center justify-center rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-600 focus-visible:ring-1 focus-visible:ring-primary-500 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
 							>
 								Verify Code
 							</button>
@@ -240,7 +240,7 @@
 
 						<button
 							type="submit"
-							class="inline-flex h-9 w-full items-center justify-center rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-600 focus-visible:ring-1 focus-visible:ring-primary-500 focus-visible:outline-none cursor-pointer disabled:pointer-events-none disabled:opacity-50"
+							class="inline-flex h-9 w-full cursor-pointer items-center justify-center rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-600 focus-visible:ring-1 focus-visible:ring-primary-500 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
 						>
 							Create Account
 						</button>

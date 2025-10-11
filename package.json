@@ -74,11 +74,14 @@
 		"@node-rs/argon2": "^2.0.2",
 		"@threlte/core": "^8.1.5",
 		"@threlte/extras": "^9.5.4",
+		"arctic": "^3.7.0",
 		"culori": "^4.0.2",
 		"postprocessing": "^6.37.8",
+		"resend": "^6.1.2",
 		"svelte-three": "^0.1.2",
 		"three": "^0.180.0",
 		"three-bvh-csg": "^0.0.17",
-		"three-csg-ts": "^3.2.0"
+		"three-csg-ts": "^3.2.0",
+		"unique-names-generator": "^4.7.1"
 	}
 }
